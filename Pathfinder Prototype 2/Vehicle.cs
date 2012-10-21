@@ -60,6 +60,7 @@ namespace Pathfinder_Prototype_2
 
         public void traverseMap(int startXt, int startYt, int endXt, int endYt)
         {
+            int steps = 0;
 
             startX = startXt;
             startY = startYt;
@@ -86,12 +87,23 @@ namespace Pathfinder_Prototype_2
                 do
                 {
 
+                                        if (steps >= 1600)
+                    {
+                        atTarget = true;
+                        break;
+                    }
+                    steps++;
+
                     if( (positionX == targetX) && (positionY == targetY))
                     {
                         atTarget = true;
                         break;
                     }
-
+                    if (givenPath.Count == 0)
+                    {
+                        atTarget = true;
+                        break;
+                    }
                     PathNode nextNode = givenPath.Last();
                     givenPath.Remove(nextNode);
 
@@ -111,11 +123,12 @@ namespace Pathfinder_Prototype_2
 
 
 
+
                 }while(true);
 
 
             } while (atTarget == false);
-            blinkUpdate.Stop();
+          
             generatePathImage();
            
         }
@@ -125,7 +138,7 @@ namespace Pathfinder_Prototype_2
 
         private bool isNextNodeSafe(PathNode node)
         {
-            if (realMap[node.x, node.y] <= 0.5)
+            if (realMap[node.x, node.y] <= 1.0)
             {
                 return true;
             }
@@ -187,10 +200,12 @@ namespace Pathfinder_Prototype_2
             float red = 255;
             float blue = 0;
 
+
+            bool notKnown = false;
             if (gradient == 0)
             {
+                notKnown = true;
                 gradient = realMap[x, y];
-
             }
 
             if (gradient <= 1f)
@@ -208,6 +223,14 @@ namespace Pathfinder_Prototype_2
             else
             {
                 green = 0;
+            }
+
+
+            if (notKnown == true)
+            {
+                green = ((float)green * 0.3f);
+                red = ((float)red * 0.3f);
+
             }
 
             foreach (PathNode n in takenPath)
