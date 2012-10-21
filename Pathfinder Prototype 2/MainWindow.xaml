@@ -4,10 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" x:Class="Pathfinder_Prototype_2.MainWindow"
         Title="Unknown Pathfinding" Height="700" Width="700">
     <Grid>
-    	<Image HorizontalAlignment="Left" Height="512" VerticalAlignment="Top" Width="512" Margin="8,8,0,0"/>
-    	<Button x:Name="btn_simulate" Content="Simulate" HorizontalAlignment="Right" Margin="0,0,8,142" VerticalAlignment="Bottom" Width="152" FontSize="14.667"/>
-    	<ComboBox x:Name="cmb_elevationMap" HorizontalAlignment="Right" Margin="0,30,8,0" VerticalAlignment="Top" Width="152" RenderTransformOrigin="0.487,0.683"/>
-    	<ComboBox x:Name="cmb_slopeAlgorithm" HorizontalAlignment="Right" Margin="0,94,8,0" VerticalAlignment="Top" Width="152"/>
+        <Image x:Name="img_main" HorizontalAlignment="Left" Height="512" VerticalAlignment="Top" Width="512" />
+    	<Button x:Name="btn_simulate" Content="Simulate" HorizontalAlignment="Right" Margin="0,0,8,142" VerticalAlignment="Bottom" Width="143" FontSize="14.667" Click="btn_simulate_Click" />
+        <ComboBox x:Name="cmb_elevationMap" HorizontalAlignment="Right" Margin="0,30,8,0" VerticalAlignment="Top" Width="152" RenderTransformOrigin="0.487,0.683"  SelectionChanged="elvmapchanged">
+    			<ComboBoxItem Content="Map A - 512"  />
+    			<ComboBoxItem Content="Map B - 512" />
+    	</ComboBox>
+        <ComboBox x:Name="cmb_slopeAlgorithm" HorizontalAlignment="Right" Margin="0,94,8,0" VerticalAlignment="Top" Width="152" SelectionChanged="cmb_slopeAlgorithm_SelectionChanged">
+    		    <ComboBoxItem Content="Maximum"  />
+    			<ComboBoxItem Content="Average" />
+    			<ComboBoxItem Content="Horn"  />
+		</ComboBox>
     	<TextBox x:Name="txt_sectorSize" HorizontalAlignment="Right" Margin="0,161,8,0" TextWrapping="Wrap" Text="10" Width="58.553" VerticalAlignment="Top"/>
     	<TextBox x:Name="txt_startX" HorizontalAlignment="Right" Margin="0,305,98.446,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="40" Height="20"/>
     	<TextBox x:Name="txt_startY" HorizontalAlignment="Right" Margin="0,305,9,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" RenderTransformOrigin="0.496,0.41" Width="40" Height="20"/>
@@ -15,14 +22,16 @@
     	<TextBlock HorizontalAlignment="Right" Margin="0,64,0,0" TextWrapping="Wrap" Text="Slope Algorithm" VerticalAlignment="Top" Width="164" Height="26" Foreground="White" Background="Red" FontSize="18.667" Padding="6,0,0,0"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,131,0,0" TextWrapping="Wrap" Text="Hazard Map" VerticalAlignment="Top" Width="164" Height="26" Foreground="White" Background="#FF009CFF" FontSize="18.667" Padding="6,0,0,0"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,195,0,0" TextWrapping="Wrap" Text="Pathfinding" VerticalAlignment="Top" Width="164" Height="26" Foreground="White" Background="#FF00FF04" FontSize="18.667" Padding="6,0,0,0"/>
-    	<ComboBox x:Name="cmb_pathAlgorithm" HorizontalAlignment="Right" Margin="0,250.96,8,0" VerticalAlignment="Top" Width="152"/>
+    	<ComboBox x:Name="cmb_pathAlgorithm" HorizontalAlignment="Right" Margin="0,250.96,8,0" VerticalAlignment="Top" Width="152">
+    		<ComboBoxItem Content="Dynamic A Star"  />
+			</ComboBox>
     	<TextBlock HorizontalAlignment="Right" Margin="0,161,70.553,0" TextWrapping="Wrap" Text="Sector Size" VerticalAlignment="Top" Width="89.447" Height="21.96" FontSize="14.667"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,225,9,0" TextWrapping="Wrap" Text="Search Algorithm" VerticalAlignment="Top" Width="151" Height="21.96" FontSize="14.667"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,281.493,133.703,0" TextWrapping="Wrap" Text="Start" VerticalAlignment="Top" FontSize="14.667"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,308,142.922,0" TextWrapping="Wrap" Text="X" VerticalAlignment="Top" FontWeight="Bold"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,308,59.476,0" TextWrapping="Wrap" Text="Y" VerticalAlignment="Top" FontWeight="Bold"/>
-    	<TextBox x:Name="txt_endX" HorizontalAlignment="Right" Margin="0,0,98.446,284" TextWrapping="Wrap" Text="0" VerticalAlignment="Bottom" Width="40" Height="20"/>
-    	<TextBox x:Name="txt_endY" HorizontalAlignment="Right" Margin="0,0,9,284" TextWrapping="Wrap" Text="0" VerticalAlignment="Bottom" RenderTransformOrigin="0.496,0.41" Width="40" Height="20"/>
+    	<TextBox x:Name="txt_endX" HorizontalAlignment="Right" Margin="0,0,98.446,284" TextWrapping="Wrap" Text="20" VerticalAlignment="Bottom" Width="40" Height="20"/>
+    	<TextBox x:Name="txt_endY" HorizontalAlignment="Right" Margin="0,0,9,284" TextWrapping="Wrap" Text="20" VerticalAlignment="Bottom" RenderTransformOrigin="0.496,0.41" Width="40" Height="20"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,0,142.922,285.04" TextWrapping="Wrap" Text="X" VerticalAlignment="Bottom" FontWeight="Bold"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,0,59.476,285.04" TextWrapping="Wrap" Text="Y" VerticalAlignment="Bottom" FontWeight="Bold"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,0,139.643,305" TextWrapping="Wrap" Text="End" VerticalAlignment="Bottom" FontSize="14.667"/>
