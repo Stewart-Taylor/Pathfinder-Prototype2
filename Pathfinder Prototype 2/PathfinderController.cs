@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
+using System.ComponentModel;
+using System.Threading;
+using System.Windows.Threading;
 
 
 namespace Pathfinder_Prototype_2
@@ -16,11 +19,13 @@ namespace Pathfinder_Prototype_2
 
         private Random r = new Random();
 
+        BackgroundWorker backgroundWorker = new BackgroundWorker();
+
+        private Vehicle rover;
 
         public PathfinderController()
         {
-
-
+            backgroundWorker.RunWorkerAsync();
         }
 
 
@@ -56,9 +61,28 @@ namespace Pathfinder_Prototype_2
                 {
                     pathfinder = new Pathfinder(hazardModel.getHazardModel(), startX, startY, targetX, targetY);
                 }
-                catch (Exception e) { }
+                catch (Exception) { }
             }
         }
+
+
+        public void startSimulation(int startX , int startY , int endX , int endY , Dispatcher d)
+        {
+           // BackgroundWorker worker = sender as BackgroundWorker;
+           
+            rover = new Vehicle(hazardModel.getHazardModel() , d);
+            rover.traverseMap(startX ,  startY ,  endX ,  endY);
+        }
+
+
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+          //  rover = new Vehicle(hazardModel.getHazardModel());
+         //   rover.traverseMap(startX, startY, endX, endY);
+        }
+
+
         public ImageSource getElevationModelImage()
         {
             return elevationLoader.getImageSource();
@@ -97,6 +121,12 @@ namespace Pathfinder_Prototype_2
         public ImageSource getPathImage()
         {
             return pathfinder.getPathImage();
+        }
+
+
+        public ImageSource getVehicleImage()
+        {
+            return rover.getPathImage();
         }
 
     }

@@ -220,7 +220,7 @@ namespace Pathfinder_Prototype_2
             Node newNode = new Node();
             newNode.x = x;
             newNode.y = y;
-            newNode.g = (int)(grid[x, y] * 100);
+            newNode.g = (int)(grid[x, y] * 10);
             newNode.h = estimateDistance(x, y, targetNode);
             newNode.parent = parent;
                 

@@ -65,6 +65,7 @@
     <Compile Include="SlopeHorn.cs" />
     <Compile Include="SlopeMax.cs" />
     <Compile Include="SlopeModel.cs" />
+    <Compile Include="Vehicle.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

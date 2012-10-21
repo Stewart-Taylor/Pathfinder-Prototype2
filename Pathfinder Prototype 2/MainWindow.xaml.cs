@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Pathfinder_Prototype_2
 {
@@ -105,8 +106,13 @@ namespace Pathfinder_Prototype_2
 
             }
 
-            pathfinderController.generatePath(startX, startY, targetX, targetY);
-            img_main.Source = pathfinderController.getPathImage();
+          //  pathfinderController.generatePath(startX, startY, targetX, targetY);
+          //  img_main.Source = pathfinderController.getPathImage();
+
+                   
+            pathfinderController.startSimulation(startX, startY, targetX, targetY , this.Dispatcher);
+            img_main.Source = pathfinderController.getVehicleImage();
+                   
         }
 
         private void elvmapchanged(object sender, SelectionChangedEventArgs e)
