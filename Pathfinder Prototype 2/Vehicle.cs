@@ -156,11 +156,87 @@ namespace Pathfinder_Prototype_2
 
             } while (atTarget == false);
           
-            generatePathImage();
+          //  generatePathImage();
            
         }
 
 
+
+
+        public void traverseMapDstar(int startXt, int startYt, int endXt, int endYt)
+        {
+            steps = 0;
+
+            startX = startXt;
+            startY = startYt;
+            targetX = endXt;
+            targetY = endYt;
+
+            positionX = startX;
+            positionY = startY;
+
+
+
+            bool atTarget = false;
+
+            SearchAlgorithm search; // = new AStar(knownMap,positionX , positionY , targetX , targetY);
+
+            do
+            {
+                search = new AStar(knownMap, positionX, positionY, targetX, targetY);
+
+                givenPath = search.getPath();
+
+
+
+                do
+                {
+
+                    if (steps >= 1600)
+                    {
+                        atTarget = true;
+                        break;
+                    }
+                    steps++;
+
+                    if ((positionX == targetX) && (positionY == targetY))
+                    {
+                        atTarget = true;
+                        break;
+                    }
+                    if (givenPath.Count == 0)
+                    {
+                        atTarget = true;
+                        break;
+                    }
+                    PathNode nextNode = givenPath.Last();
+                    givenPath.Remove(nextNode);
+
+                    if (isNextNodeSafe(nextNode) == true)
+                    {
+                        positionX = nextNode.x;
+                        positionY = nextNode.y;
+                        takenPath.Add(nextNode);
+
+                        updateOwnMap(positionX, positionY);
+                    }
+                    else
+                    {
+                        updateOwnMap(nextNode.x, nextNode.y);
+                        break;
+                    }
+
+
+
+
+                } while (true);
+
+
+            } while (atTarget == false);
+
+            //  generatePathImage();
+
+        }
 
 
 
@@ -263,7 +339,7 @@ namespace Pathfinder_Prototype_2
         }
 
 
-        private void generatePathImage()
+        public void generatePathImage()
         {
             Bitmap bitmap = new Bitmap(knownMap.GetLength(0), knownMap.GetLength(1));
 

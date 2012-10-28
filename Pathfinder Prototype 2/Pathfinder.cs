@@ -20,17 +20,34 @@ namespace Pathfinder_Prototype_2
 
         List<PathNode> pathNodes = new List<PathNode>();
 
-      
+        int startX;
+        int startY;
+        int targetX;
+        int targetY;
 
-        public Pathfinder(float[,] hazardModelT , int startX , int startY , int targetX , int targetY)
+
+        public int getSteps()
+        {
+            return pathNodes.Count;
+        }
+
+        public Pathfinder(float[,] hazardModelT , int startXT , int startYT , int targetXT , int targetYT)
         {
             hazardModel = hazardModelT;
 
             width = hazardModel.GetLength(0);
             height = hazardModel.GetLength(1);
 
-            findPath(startX , startY , targetX , targetY);
-            generatePathImage();
+            // findPath(startX , startY , targetX , targetY);
+           // generatePathImage();
+
+
+            startX = startXT;
+            startY = startYT;
+            targetX = targetXT;
+            targetY = targetYT;
+
+            pathBitmap = new Bitmap(width, height);
         }
 
 
@@ -40,7 +57,7 @@ namespace Pathfinder_Prototype_2
         }
 
 
-        private void findPath(int startX , int startY , int targetX , int targetY)
+        public void findPath(int startX , int startY , int targetX , int targetY)
         {
             SearchAlgorithm aStar = new AStar(hazardModel , startX , startY , targetX , targetY);
 
@@ -55,7 +72,7 @@ namespace Pathfinder_Prototype_2
 
 
 
-        private void generatePathImage()
+        public void generatePathImage()
         {
             Bitmap bitmap = new Bitmap(width, height);
 
@@ -87,6 +104,9 @@ namespace Pathfinder_Prototype_2
             float blue = 0;
 
 
+            bool notKnown = false;
+
+
             if (gradient <= 1f)
             {
 
@@ -104,6 +124,14 @@ namespace Pathfinder_Prototype_2
                 green = 0;
             }
 
+
+            if (notKnown == true)
+            {
+                green = ((float)green * 0.3f);
+                red = ((float)red * 0.3f);
+
+            }
+
             foreach (PathNode n in pathNodes)
             {
                 if ((n.x == x) && (n.y == y))
@@ -115,6 +143,11 @@ namespace Pathfinder_Prototype_2
 
             }
 
+
+            if ((targetX == x) && (targetY == y))
+            {
+                green = 255; red = 255; blue = 255;
+            }
 
             color = System.Drawing.Color.FromArgb(255, (int)red, (int)green, (int)blue);
 

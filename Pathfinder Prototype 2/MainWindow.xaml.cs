@@ -135,7 +135,24 @@ namespace Pathfinder_Prototype_2
           //  img_main.Source = pathfinderController.getPathImage();
 
                    
-            pathfinderController.startSimulation(startX, startY, targetX, targetY );
+            
+      
+
+            if (cmb_pathAlgorithm.SelectedIndex == 0)
+            {
+                pathfinderController.startSimulation(startX, startY, targetX, targetY);
+            }
+            else if (cmb_pathAlgorithm.SelectedIndex == 1)
+            {
+                pathfinderController.startSimulationDSTAR(startX, startY, targetX, targetY);
+            }
+            else if (cmb_pathAlgorithm.SelectedIndex == 2)
+            {
+                pathfinderController.startSimulationKnownMap(startX, startY, targetX, targetY );
+            }
+
+
+
             lbl_stepsTaken.Text = pathfinderController.getSteps().ToString();
             lbl_timeTaken.Text = pathfinderController.getTimeTaken();
             img_main.Source = pathfinderController.getVehicleImage();

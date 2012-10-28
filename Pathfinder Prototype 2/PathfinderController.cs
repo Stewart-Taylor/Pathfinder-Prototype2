@@ -22,6 +22,9 @@ namespace Pathfinder_Prototype_2
         private bool stepTraverseStarted = false;
 
         private Vehicle rover;
+        private int steps;
+
+        ImageSource imageSource;
 
         private String timeTaken;
         public String getTimeTaken()
@@ -30,7 +33,7 @@ namespace Pathfinder_Prototype_2
         }
         public int getSteps()
         {
-            return rover.getSteps();
+            return steps;
         }
 
 
@@ -77,6 +80,34 @@ namespace Pathfinder_Prototype_2
         }
 
 
+        public void startSimulationKnownMap(int startX, int startY, int endX, int endY)
+        {
+      
+
+            Pathfinder pathfinder = new Pathfinder(hazardModel.getHazardModel(), startX, startY, endX, endY);
+
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
+            pathfinder.findPath(startX, startY, endX, endY);
+
+            sw.Stop();
+
+            pathfinder.generatePathImage();
+            steps = pathfinder.getPath().Count;
+            imageSource = pathfinder.getPathImage();
+
+            timeTaken = sw.Elapsed.TotalSeconds + " Seconds";
+
+            stepTraverseStarted = false;
+        }
+
+
+        private void generatePathImage()
+        {
+
+
+        }
+
         public void startSimulation(int startX , int startY , int endX , int endY)
         {
             rover = new Vehicle(hazardModel.getHazardModel());
@@ -86,6 +117,31 @@ namespace Pathfinder_Prototype_2
             rover.traverseMap(startX, startY, endX, endY);
 
             sw.Stop();
+
+            rover.generatePathImage();
+            steps = rover.getSteps();
+            imageSource = rover.getPathImage();
+
+            timeTaken = sw.Elapsed.TotalSeconds + " Seconds";
+
+            stepTraverseStarted = false;
+        }
+
+
+
+        public void startSimulationDSTAR(int startX, int startY, int endX, int endY)
+        {
+            rover = new Vehicle(hazardModel.getHazardModel());
+
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
+            rover.traverseMap(startX, startY, endX, endY);
+
+            sw.Stop();
+
+            rover.generatePathImage();
+            steps = rover.getSteps();
+            imageSource = rover.getPathImage();
 
             timeTaken = sw.Elapsed.TotalSeconds + " Seconds";
 
@@ -105,6 +161,7 @@ namespace Pathfinder_Prototype_2
             else
             {
                 rover.traverseMapStep();
+                imageSource = rover.getPathImage();
             }
         }
 
@@ -159,7 +216,7 @@ namespace Pathfinder_Prototype_2
 
         public ImageSource getVehicleImage()
         {
-            return rover.getPathImage();
+            return imageSource;
         }
 
     }

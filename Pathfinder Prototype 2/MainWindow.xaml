@@ -25,6 +25,7 @@
     	<ComboBox x:Name="cmb_pathAlgorithm" HorizontalAlignment="Right" Margin="0,250.96,8,0" VerticalAlignment="Top" Width="152">
     		<ComboBoxItem Content="Dynamic A Star"  />
 			<ComboBoxItem Content="D Star"  />
+			<ComboBoxItem Content="A Star (Known Map)"  />
 			</ComboBox>
     	<TextBlock HorizontalAlignment="Right" Margin="0,161,70.553,0" TextWrapping="Wrap" Text="Sector Size" VerticalAlignment="Top" Width="89.447" Height="21.96" FontSize="14.667"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,225,9,0" TextWrapping="Wrap" Text="Search Algorithm" VerticalAlignment="Top" Width="151" Height="21.96" FontSize="14.667"/>
