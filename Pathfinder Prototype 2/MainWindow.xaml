@@ -8,7 +8,7 @@
     	<Button x:Name="btn_simulate" Content="Simulate" HorizontalAlignment="Right" Margin="0,0,8,142" VerticalAlignment="Bottom" Width="143" FontSize="14.667" Click="btn_simulate_Click" />
         <ComboBox x:Name="cmb_elevationMap" HorizontalAlignment="Right" Margin="0,30,8,0" VerticalAlignment="Top" Width="152" RenderTransformOrigin="0.487,0.683"  SelectionChanged="elvmapchanged">
     			<ComboBoxItem Content="Map A - 512"  />
-    			<ComboBoxItem Content="Map B - 512" />
+    			<ComboBoxItem Content="Map B - 1024" />
     	</ComboBox>
         <ComboBox x:Name="cmb_slopeAlgorithm" HorizontalAlignment="Right" Margin="0,94,8,0" VerticalAlignment="Top" Width="152" SelectionChanged="cmb_slopeAlgorithm_SelectionChanged">
     		    <ComboBoxItem Content="Maximum"  />
@@ -24,6 +24,7 @@
     	<TextBlock HorizontalAlignment="Right" Margin="0,195,0,0" TextWrapping="Wrap" Text="Pathfinding" VerticalAlignment="Top" Width="164" Height="26" Foreground="White" Background="#FF00FF04" FontSize="18.667" Padding="6,0,0,0"/>
     	<ComboBox x:Name="cmb_pathAlgorithm" HorizontalAlignment="Right" Margin="0,250.96,8,0" VerticalAlignment="Top" Width="152">
     		<ComboBoxItem Content="Dynamic A Star"  />
+			<ComboBoxItem Content="D Star"  />
 			</ComboBox>
     	<TextBlock HorizontalAlignment="Right" Margin="0,161,70.553,0" TextWrapping="Wrap" Text="Sector Size" VerticalAlignment="Top" Width="89.447" Height="21.96" FontSize="14.667"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,225,9,0" TextWrapping="Wrap" Text="Search Algorithm" VerticalAlignment="Top" Width="151" Height="21.96" FontSize="14.667"/>
@@ -37,9 +38,9 @@
     	<TextBlock HorizontalAlignment="Right" Margin="0,0,139.643,305" TextWrapping="Wrap" Text="End" VerticalAlignment="Bottom" FontSize="14.667"/>
     	<Button x:Name="btn_step" Content="Next Step" HorizontalAlignment="Right" Margin="0,0,7.785,112.493" VerticalAlignment="Bottom" Width="143" FontSize="14.667" Click="btn_step_Click" />
     	<TextBlock HorizontalAlignment="Left" Margin="8,0,0,122.039" TextWrapping="Wrap" Text="Steps:" VerticalAlignment="Bottom" FontSize="16"/>
-    	<TextBlock x:Name="lbl_stepsTaken" HorizontalAlignment="Left" Margin="53.956,0,0,122.039" TextWrapping="Wrap" Text="0" VerticalAlignment="Bottom" FontSize="16" Width="50"/>
+    	<TextBlock x:Name="lbl_stepsTaken" HorizontalAlignment="Left" Margin="53.956,0,0,122.039" TextWrapping="Wrap" Text="0" VerticalAlignment="Bottom" FontSize="16" Width="300"/>
     	<TextBlock HorizontalAlignment="Left" Margin="8,0,0,96.759" TextWrapping="Wrap" Text="Time:" VerticalAlignment="Bottom" FontSize="16"/>
-    	<TextBlock x:Name="lbl_timeTaken" HorizontalAlignment="Left" Margin="53.956,0,0,96.759" TextWrapping="Wrap" Text="0" VerticalAlignment="Bottom" FontSize="16" Width="50"/>
+    	<TextBlock x:Name="lbl_timeTaken" HorizontalAlignment="Left" Margin="53.956,0,0,96.759" TextWrapping="Wrap" Text="0" VerticalAlignment="Bottom" FontSize="16" Width="300"/>
         
     </Grid>
 </Window>

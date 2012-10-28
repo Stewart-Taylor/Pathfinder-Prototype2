@@ -21,11 +21,13 @@ namespace Pathfinder_Prototype_2
 
         private bool stepTraverseStarted = false;
 
-        BackgroundWorker backgroundWorker = new BackgroundWorker();
-
         private Vehicle rover;
 
-
+        private String timeTaken;
+        public String getTimeTaken()
+        {
+            return timeTaken;
+        }
         public int getSteps()
         {
             return rover.getSteps();
@@ -34,7 +36,7 @@ namespace Pathfinder_Prototype_2
 
         public PathfinderController()
         {
-            backgroundWorker.RunWorkerAsync();
+          
         }
 
 
@@ -76,9 +78,17 @@ namespace Pathfinder_Prototype_2
 
 
         public void startSimulation(int startX , int startY , int endX , int endY)
-        {  
+        {
             rover = new Vehicle(hazardModel.getHazardModel());
+
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+
             rover.traverseMap(startX, startY, endX, endY);
+
+            sw.Stop();
+
+            timeTaken = sw.Elapsed.TotalSeconds + " Seconds";
+
             stepTraverseStarted = false;
         }
 

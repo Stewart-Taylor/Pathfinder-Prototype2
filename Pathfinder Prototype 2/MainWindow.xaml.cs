@@ -137,6 +137,7 @@ namespace Pathfinder_Prototype_2
                    
             pathfinderController.startSimulation(startX, startY, targetX, targetY );
             lbl_stepsTaken.Text = pathfinderController.getSteps().ToString();
+            lbl_timeTaken.Text = pathfinderController.getTimeTaken();
             img_main.Source = pathfinderController.getVehicleImage();
                    
         }

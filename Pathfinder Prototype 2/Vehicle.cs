@@ -28,6 +28,7 @@ namespace Pathfinder_Prototype_2
         private int targetY;
 
 
+      
 
         private int steps = 0;
         private bool atTarget = false;
@@ -36,6 +37,7 @@ namespace Pathfinder_Prototype_2
 
         private Bitmap pathBitmap;
 
+    
 
         public int getSteps()
         {
