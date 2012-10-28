@@ -35,6 +35,11 @@
     	<TextBlock HorizontalAlignment="Right" Margin="0,0,142.922,285.04" TextWrapping="Wrap" Text="X" VerticalAlignment="Bottom" FontWeight="Bold"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,0,59.476,285.04" TextWrapping="Wrap" Text="Y" VerticalAlignment="Bottom" FontWeight="Bold"/>
     	<TextBlock HorizontalAlignment="Right" Margin="0,0,139.643,305" TextWrapping="Wrap" Text="End" VerticalAlignment="Bottom" FontSize="14.667"/>
+    	<Button x:Name="btn_step" Content="Next Step" HorizontalAlignment="Right" Margin="0,0,7.785,112.493" VerticalAlignment="Bottom" Width="143" FontSize="14.667" Click="btn_step_Click" />
+    	<TextBlock HorizontalAlignment="Left" Margin="8,0,0,122.039" TextWrapping="Wrap" Text="Steps:" VerticalAlignment="Bottom" FontSize="16"/>
+    	<TextBlock x:Name="lbl_stepsTaken" HorizontalAlignment="Left" Margin="53.956,0,0,122.039" TextWrapping="Wrap" Text="0" VerticalAlignment="Bottom" FontSize="16" Width="50"/>
+    	<TextBlock HorizontalAlignment="Left" Margin="8,0,0,96.759" TextWrapping="Wrap" Text="Time:" VerticalAlignment="Bottom" FontSize="16"/>
+    	<TextBlock x:Name="lbl_timeTaken" HorizontalAlignment="Left" Margin="53.956,0,0,96.759" TextWrapping="Wrap" Text="0" VerticalAlignment="Bottom" FontSize="16" Width="50"/>
         
     </Grid>
 </Window>

@@ -13,10 +13,6 @@ namespace Pathfinder_Prototype_2
 {
     class Vehicle
     {
-
-        DispatcherTimer blinkUpdate = new DispatcherTimer();
-        Dispatcher dispatcher;
-
         private List<PathNode> takenPath = new List<PathNode>();
         private List<PathNode> givenPath = new List<PathNode>();
 
@@ -33,7 +29,18 @@ namespace Pathfinder_Prototype_2
 
 
 
+        private int steps = 0;
+        private bool atTarget = false;
+
+        private bool stepTraverseStarted = false;
+
         private Bitmap pathBitmap;
+
+
+        public int getSteps()
+        {
+            return steps;
+        }
 
         public int getX()
         {
@@ -45,22 +52,40 @@ namespace Pathfinder_Prototype_2
             return positionY;
         }
 
-        public Vehicle(float[,] realMapT , Dispatcher d)
+        public Vehicle(float[,] realMapT )
         {
-            dispatcher = d;
             realMap = realMapT;
             knownMap = new float[realMap.GetLength(0), realMap.GetLength(1)]; // find another way to get map dimensions dynamically
 
-            pathBitmap = new Bitmap(knownMap.GetLength(0), knownMap.GetLength(1));
-
-           
+            pathBitmap = new Bitmap(knownMap.GetLength(0), knownMap.GetLength(1));  
         }
 
 
 
+        public void startTraverse(int startXt, int startYt, int endXt, int endYt)
+        {
+             steps = 0;
+
+            startX = startXt;
+            startY = startYt;
+            targetX = endXt;
+            targetY = endYt;
+
+            positionX = startX;
+            positionY = startY;
+
+            knownMap = new float[realMap.GetLength(0), realMap.GetLength(1)];
+
+             atTarget = false;
+            
+             pathBitmap = new Bitmap(knownMap.GetLength(0), knownMap.GetLength(1));
+            
+        }
+
+
         public void traverseMap(int startXt, int startYt, int endXt, int endYt)
         {
-            int steps = 0;
+             steps = 0;
 
             startX = startXt;
             startY = startYt;
@@ -136,6 +161,52 @@ namespace Pathfinder_Prototype_2
 
 
 
+
+        public void traverseMapStep()
+        {
+
+            SearchAlgorithm search; // = new AStar(knownMap,positionX , positionY , targetX , targetY);
+
+            
+                search = new AStar(knownMap, positionX, positionY, targetX, targetY);
+
+                givenPath = search.getPath();
+
+
+                    if ((positionX == targetX) && (positionY == targetY))
+                    {
+                        atTarget = true;
+                        
+                    }
+                    if (givenPath.Count == 0)
+                    {
+                        atTarget = true;
+                 
+                    }
+
+                    PathNode nextNode = givenPath.Last();
+                    givenPath.Remove(nextNode);
+
+                    if (isNextNodeSafe(nextNode) == true)
+                    {
+                        positionX = nextNode.x;
+                        positionY = nextNode.y;
+                        takenPath.Add(nextNode);
+
+                        updateOwnMap(positionX, positionY);
+                    }
+                    else
+                    {
+                        updateOwnMap(nextNode.x, nextNode.y);
+                    }
+
+           // generatePathImage();
+
+        }
+
+
+
+
         private bool isNextNodeSafe(PathNode node)
         {
             if (realMap[node.x, node.y] <= 1.0)
@@ -166,6 +237,27 @@ namespace Pathfinder_Prototype_2
 
             ((MainWindow)App.Current.MainWindow).img_main.Source = getPathImage();
 
+        }
+
+
+        private void generateImageQuick()
+        {
+            Bitmap bitmap = new Bitmap(knownMap.GetLength(0), knownMap.GetLength(1));
+
+
+            for (int x = 0; x < knownMap.GetLength(0); x++)
+            {
+                for (int y = 0; y < knownMap.GetLength(1); y++)
+                {
+                    System.Drawing.Color tempColor = getVehicleColorValue(knownMap[x, y], x, y);
+
+                    bitmap.SetPixel(x, y, tempColor);
+
+                }
+
+            }
+
+            pathBitmap = bitmap;
         }
 
 

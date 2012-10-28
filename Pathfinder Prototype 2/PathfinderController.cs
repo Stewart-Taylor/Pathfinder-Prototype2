@@ -19,9 +19,18 @@ namespace Pathfinder_Prototype_2
 
         private Random r = new Random();
 
+        private bool stepTraverseStarted = false;
+
         BackgroundWorker backgroundWorker = new BackgroundWorker();
 
         private Vehicle rover;
+
+
+        public int getSteps()
+        {
+            return rover.getSteps();
+        }
+
 
         public PathfinderController()
         {
@@ -66,14 +75,28 @@ namespace Pathfinder_Prototype_2
         }
 
 
-        public void startSimulation(int startX , int startY , int endX , int endY , Dispatcher d)
-        {
-           // BackgroundWorker worker = sender as BackgroundWorker;
-           
-            rover = new Vehicle(hazardModel.getHazardModel() , d);
-            rover.traverseMap(startX ,  startY ,  endX ,  endY);
+        public void startSimulation(int startX , int startY , int endX , int endY)
+        {  
+            rover = new Vehicle(hazardModel.getHazardModel());
+            rover.traverseMap(startX, startY, endX, endY);
+            stepTraverseStarted = false;
         }
 
+
+
+        public void nextStep(int startX , int startY , int endX , int endY)
+        {
+            if (stepTraverseStarted == false)
+            {
+                rover = new Vehicle(hazardModel.getHazardModel());
+                rover.startTraverse(startX, startY, endX, endY);
+                stepTraverseStarted = true;
+            }
+            else
+            {
+                rover.traverseMapStep();
+            }
+        }
 
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)

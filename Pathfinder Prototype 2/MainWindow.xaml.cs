@@ -83,6 +83,31 @@ namespace Pathfinder_Prototype_2
             return size;
         }
 
+        private void btn_step_Click(object sender, RoutedEventArgs e)
+        {
+            int startX = 0;
+            int startY = 0;
+            int targetX = 22;
+            int targetY = 30;
+
+            try
+            {
+                startX = int.Parse(txt_startX.Text);
+                startY = int.Parse(txt_startY.Text);
+                targetX = int.Parse(txt_endX.Text);
+                targetY = int.Parse(txt_endY.Text);
+            }
+            catch (Exception)
+            {
+
+            }
+
+
+            pathfinderController.nextStep(startX, startY, targetX, targetY);
+            img_main.Source = pathfinderController.getVehicleImage();
+        }
+
+
         private void btn_simulate_Click(object sender, RoutedEventArgs e)
         {
 
@@ -110,7 +135,8 @@ namespace Pathfinder_Prototype_2
           //  img_main.Source = pathfinderController.getPathImage();
 
                    
-            pathfinderController.startSimulation(startX, startY, targetX, targetY , this.Dispatcher);
+            pathfinderController.startSimulation(startX, startY, targetX, targetY );
+            lbl_stepsTaken.Text = pathfinderController.getSteps().ToString();
             img_main.Source = pathfinderController.getVehicleImage();
                    
         }
@@ -125,6 +151,8 @@ namespace Pathfinder_Prototype_2
         {
             pathfinderController.loadSlopeModel(getSlopeType());
         }
+
+
 
 
     }
