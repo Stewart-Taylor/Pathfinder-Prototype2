@@ -5,15 +5,12 @@ using System.Text;
 
 namespace Pathfinder_Prototype_2
 {
-    class AStar :SearchAlgorithm
+    class DstarNew : SearchAlgorithm
     {
 
         List<Node> closed = new List<Node>();
         List<Node> open = new List<Node>();
-
-        List<Node> path;
-
-        private Node targetNode;
+        List<Node> hazard = new List<Node>();
 
         public class Node
         {
@@ -21,15 +18,18 @@ namespace Pathfinder_Prototype_2
             {
                 return g + h;
             }
-           public int g;
-           public int h;
-           public int x;
-           public int y;
-           public Node parent;
-
+            public int g;
+            public int h;
+            public int x;
+            public int y;
+            public Node parent;
         }
 
-        public AStar(float[,] gridT , int startXT , int startYT , int targetXT , int targetYT) : base (  gridT , startXT , startYT , targetXT , targetYT)
+
+        Node current;
+        Node target;
+
+        public DstarNew(float[,] gridT, int startXT, int startYT, int targetXT, int targetYT) : base(gridT, startXT, startYT, targetXT, targetYT)
         {
             grid = gridT;
             startX = startXT;
@@ -38,21 +38,52 @@ namespace Pathfinder_Prototype_2
             targetY = targetYT;
 
 
+            current = new Node();
+            target = new Node();
+            target.x = targetX;
+            target.y = targetY;
+
+
+        }
+
+
+   
+
+
+        public void updateVertex(int x , int y)
+        {
+            Node n = new Node();
+            n.x = x;
+            n.y = y;
+
+            hazard.Add(n);
+
+        }
+
+
+        public void replan(float[,] gridT)
+        {
+
+            grid = gridT;
+
+            computeShortestPath();
+
+        }
+
+
+        public void computeShortestPath()
+        {
+
+            open.Clear();
+            closed.Clear();
+
             if (((startX == targetX) && (startY == targetY)) == false)
             {
 
                 bool found = false; // used to determine if path is found
 
-                // creates the start node
-                Node current = new Node();
-                current.x = startX;
-                current.y = startY;
+  
 
-                //creates the target node
-                targetNode = new Node();
-                targetNode.x = targetX;
-                targetNode.y = targetY;
-                
 
                 //puts the start item in list
                 open.Add(current);
@@ -71,9 +102,9 @@ namespace Pathfinder_Prototype_2
                     // Get the node with the lowest TotalCost
                     current = open[0];
 
-                    if (current.x == targetNode.x)
+                    if (current.x == target.x)
                     {
-                        if (current.y == targetNode.y)
+                        if (current.y == target.y)
                         {
                             found = true;
                             break;
@@ -104,7 +135,7 @@ namespace Pathfinder_Prototype_2
 
                         pathNodes.Add(pathNode);
 
-                        if( current.parent == null)
+                        if (current.parent == null)
                         {
                             break;
                         }
@@ -138,20 +169,28 @@ namespace Pathfinder_Prototype_2
 
             }
 
+
         }
 
 
 
+        public void updateStart(int startX , int startY )
+        {
+            current.x = startX;
+            current.y = startY;
+
+
+        }
+
 
         private void checkAdjacent(int x, int y, List<Node> open, List<Node> closed, Node parent)
         {
-           
+
             if (checkTile((x - 1), (y), open, closed) == true)  //MIDDLE LEFT
             {
                 createNewNode((x - 1), y, 10, open, parent);
 
             }
-
 
             if (checkTile((x + 1), y, open, closed) == true) //MIDDLE RIGHT
             {
@@ -159,15 +198,11 @@ namespace Pathfinder_Prototype_2
 
             }
 
-
-
             if (checkTile((x), (y + 1), open, closed) == true) // MIDDLE BOTTOM
             {
                 createNewNode((x), (y + 1), 10, open, parent);
 
             }
-
-
 
             if (checkTile((x), (y - 1), open, closed) == true) // MIDDLE TOP
             {
@@ -175,42 +210,31 @@ namespace Pathfinder_Prototype_2
 
             }
 
+            if (checkTile((x - 1), (y - 1), open, closed) == true)    //TOP LEFT
+            {
+                createNewNode((x - 1), (y - 1), 14, open, parent);
+            }
 
 
 
-           
+            if (checkTile((x - 1), (y + 1), open, closed) == true)   // BOTTOM LEFT
+            {
+                createNewNode((x - 1), (y + 1), 14, open, parent);
+            }
+
+
+            if (checkTile((x + 1), (y - 1), open, closed) == true) //TOP RIGHT
+            {
+
+                createNewNode((x + 1), (y - 1), 14, open, parent);
+            }
 
 
 
-                if (checkTile((x - 1), (y - 1), open, closed) == true)    //TOP LEFT
-                {
-                    createNewNode((x - 1), (y - 1), 14, open, parent);
-                }
-
-
-
-                if (checkTile((x - 1), (y + 1), open, closed) == true)   // BOTTOM LEFT
-                {
-                    createNewNode((x - 1), (y + 1), 14, open, parent);
-                }
-
-
-                if (checkTile((x + 1), (y - 1), open, closed) == true) //TOP RIGHT
-                {
-
-                    createNewNode((x + 1), (y - 1), 14, open, parent);
-                }
-
-
-
-                if (checkTile((x + 1), (y + 1), open, closed) == true)  //BOTTOM RIGHT
-                {
-                    createNewNode((x + 1), (y + 1), 14, open, parent);
-                }
-
-
-            
-
+            if (checkTile((x + 1), (y + 1), open, closed) == true)  //BOTTOM RIGHT
+            {
+                createNewNode((x + 1), (y + 1), 14, open, parent);
+            }
         }
 
 
@@ -220,10 +244,10 @@ namespace Pathfinder_Prototype_2
             Node newNode = new Node();
             newNode.x = x;
             newNode.y = y;
-            newNode.g = (int)(grid[x, y] );
-            newNode.h = estimateDistance(x, y, targetNode);
+            newNode.g = (int)(grid[x, y]);
+            newNode.h = estimateDistance(x, y, target);
             newNode.parent = parent;
-                
+
 
             open.Add(newNode);
         }
@@ -272,6 +296,16 @@ namespace Pathfinder_Prototype_2
                 }
             }
 
+            foreach (Node node in hazard) // Loop through List with foreach
+            {
+                if (node.x == x)
+                {
+                    if (node.y == y)
+                    {
+                        return false;
+                    }
+                }
+            }
 
 
             return true;
@@ -284,31 +318,14 @@ namespace Pathfinder_Prototype_2
         private int estimateDistance(int currentX, int currentY, Node target)
         {
 
-            int distance;
+            return (Math.Abs(currentX- target.x) + Math.Abs(currentY - target.y));
 
-            int xDistance = Math.Abs(currentX - target.x);
 
-            int yDistance = Math.Abs(currentY - target.y);
-
-            if (xDistance > yDistance)
-            {
-                distance =  yDistance  * (xDistance - yDistance);
-            }
-            else
-            {
-                distance = xDistance  * (yDistance - xDistance);
-            }
-
-            distance = (Math.Abs(currentX - target.x) + Math.Abs(currentY - target.y));
-
-            return distance;
-
-    
 
         }
 
 
-        
+
 
     }
 }

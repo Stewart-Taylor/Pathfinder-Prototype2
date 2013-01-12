@@ -17,6 +17,7 @@ namespace Pathfinder_Prototype_2
 
         private Bitmap pathBitmap;
         private float[,] hazardModel;
+        private float[,] hazardImageModel;
 
         List<PathNode> pathNodes = new List<PathNode>();
 
@@ -31,9 +32,10 @@ namespace Pathfinder_Prototype_2
             return pathNodes.Count;
         }
 
-        public Pathfinder(float[,] hazardModelT , int startXT , int startYT , int targetXT , int targetYT)
+        public Pathfinder(float[,] hazardModelT ,float[,] hazardImageModelT, int startXT , int startYT , int targetXT , int targetYT)
         {
             hazardModel = hazardModelT;
+            hazardImageModel = hazardImageModelT;
 
             width = hazardModel.GetLength(0);
             height = hazardModel.GetLength(1);
@@ -81,7 +83,7 @@ namespace Pathfinder_Prototype_2
             {
                 for (int y = 0; y < height; y++)
                 {
-                    System.Drawing.Color tempColor = getPathColorValue(hazardModel[x, y] , x , y);
+                    System.Drawing.Color tempColor = getPathColorValue(hazardImageModel[x, y], x, y);
 
                     bitmap.SetPixel(x, y, tempColor);
                  

@@ -14,6 +14,7 @@ namespace Pathfinder_Prototype_2
         private int sectorSize;
 
         private float[,] hazardModel;
+        public float[,] hazardModelImage;  // REMOVE
         private float[,] slopeModel;
 
         private Bitmap hazardBitmap;
@@ -49,6 +50,7 @@ namespace Pathfinder_Prototype_2
             width = slopeWidth / sectorSize;
             height = slopeHeight / sectorSize;
             hazardModel = new float[width, height];
+            hazardModelImage = new float[width, height];
 
             int slopeX = 0;
             int slopeY = 0;
@@ -75,8 +77,37 @@ namespace Pathfinder_Prototype_2
                 slopeY = 0;
                 slopeX += sectorSize;
             }
+
+
+   
+
+
+            for(int x = 0 ; x < width ; x++)
+            {
+                for(int y = 0 ; y < height ; y++)
+                {
+                    hazardModelImage[x, y] = hazardModel[x, y];
+                    hazardModel[x,y] = getHazardValue(hazardModel[x,y]);
+                }
+            }
         }
 
+
+        private int getHazardValue(float value)
+        {
+            if (value <= 0.7)
+            {
+                return 1;
+            }
+            else if (value <= 1)
+            {
+                return 4;
+            }
+            else
+            {
+                return 100;
+            }
+        }
 
         private void generateHazardImage()
         {
@@ -90,7 +121,7 @@ namespace Pathfinder_Prototype_2
             {
                 for (int y = 0; y < height; y++)
                 {
-                    System.Drawing.Color tempColor = getHazardColorValue(hazardModel[x, y]);
+                    System.Drawing.Color tempColor = getHazardColorValue(hazardModelImage[x, y]);
 
                     bitmap.SetPixel(slopeX, slopeY, tempColor);
                     for (int a = 0; a < sectorSize; a++)

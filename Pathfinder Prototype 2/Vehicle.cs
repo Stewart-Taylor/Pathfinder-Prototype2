@@ -18,17 +18,17 @@ namespace Pathfinder_Prototype_2
 
         float[,] knownMap;
         float[,] realMap;
+        float[,] realImageMap;
 
         private int positionX;
         private int positionY;
+        private int previousX;
+        private int previousY;
 
         private int startX;
         private int startY;
         private int targetX;
         private int targetY;
-
-
-      
 
         private int steps = 0;
         private bool atTarget = false;
@@ -54,9 +54,10 @@ namespace Pathfinder_Prototype_2
             return positionY;
         }
 
-        public Vehicle(float[,] realMapT )
+        public Vehicle(float[,] realMapT , float[,] imageMap )
         {
             realMap = realMapT;
+            realImageMap = imageMap;
             knownMap = new float[realMap.GetLength(0), realMap.GetLength(1)]; // find another way to get map dimensions dynamically
 
             pathBitmap = new Bitmap(knownMap.GetLength(0), knownMap.GetLength(1));  
@@ -114,7 +115,7 @@ namespace Pathfinder_Prototype_2
                 do
                 {
 
-                                        if (steps >= 1600)
+                    if (steps >= 1600)
                     {
                         atTarget = true;
                         break;
@@ -136,8 +137,11 @@ namespace Pathfinder_Prototype_2
 
                     if (isNextNodeSafe(nextNode) == true)
                     {
+                        previousX = positionX;
+                        previousY = positionY;
                         positionX = nextNode.x;
                         positionY = nextNode.y;
+
                         takenPath.Add(nextNode);
 
                         updateOwnMap(positionX, positionY);
@@ -179,64 +183,76 @@ namespace Pathfinder_Prototype_2
 
             bool atTarget = false;
 
-            SearchAlgorithm search; // = new AStar(knownMap,positionX , positionY , targetX , targetY);
-
-            do
-            {
-                search = new AStar(knownMap, positionX, positionY, targetX, targetY);
-
-                givenPath = search.getPath();
+         //  DstarB search = new DstarB(knownMap); //new DStar(knownMap,positionX , positionY , targetX , targetY);
+          //  search.initialize(positionX, positionY, targetX, targetY);
+        //    search.Start(positionX, positionY, targetX, targetY);
 
 
+            DstarNew search = new DstarNew(knownMap, positionX, positionY, targetX, targetY);
 
-                do
-                {
 
-                    if (steps >= 1600)
-                    {
-                        atTarget = true;
-                        break;
-                    }
-                    steps++;
+           do
+           {
+               search.updateStart(positionX, positionY);
+               search.replan(knownMap);
 
-                    if ((positionX == targetX) && (positionY == targetY))
-                    {
-                        atTarget = true;
-                        break;
-                    }
-                    if (givenPath.Count == 0)
-                    {
-                        atTarget = true;
-                        break;
-                    }
-                    PathNode nextNode = givenPath.Last();
-                    givenPath.Remove(nextNode);
-
-                    if (isNextNodeSafe(nextNode) == true)
-                    {
-                        positionX = nextNode.x;
-                        positionY = nextNode.y;
-                        takenPath.Add(nextNode);
-
-                        updateOwnMap(positionX, positionY);
-                    }
-                    else
-                    {
-                        updateOwnMap(nextNode.x, nextNode.y);
-                        break;
-                    }
+               givenPath = search.getPath();
 
 
 
+               do
+               {
 
-                } while (true);
+                   if (steps >= 1600)
+                   {
+                       atTarget = true;
+                       break;
+                   }
+                   steps++;
+
+                   if ((positionX == targetX) && (positionY == targetY))
+                   {
+                       atTarget = true;
+                       break;
+                   }
+                   if (givenPath.Count == 0)
+                   {
+                       atTarget = true;
+                       break;
+                   }
+                   PathNode nextNode = givenPath.Last();
+                   givenPath.Remove(nextNode);
+
+                   if (isNextNodeSafe(nextNode) == true)
+                   {
+                       positionX = nextNode.x;
+                       positionY = nextNode.y;
+                       takenPath.Add(nextNode);
+
+                       updateOwnMap(positionX, positionY);
+                   }
+                   else
+                   {
+                       search.updateVertex(nextNode.x, nextNode.y);
+                       updateOwnMap(nextNode.x, nextNode.y);
+                       break;
+                   }
 
 
-            } while (atTarget == false);
 
-            //  generatePathImage();
 
+               } while (true);
+
+
+           } while (atTarget == false);
+          
+            
+            generatePathImage();
+            
         }
+
+
+      
 
 
 
@@ -287,7 +303,7 @@ namespace Pathfinder_Prototype_2
 
         private bool isNextNodeSafe(PathNode node)
         {
-            if (realMap[node.x, node.y] <= 1.0)
+            if (realMap[node.x, node.y] <= 5.0)
             {
                 return true;
             }
@@ -303,11 +319,107 @@ namespace Pathfinder_Prototype_2
         {
             knownMap[x, y] = realMap[x, y];
 
-            System.Drawing.Color tempColor = getVehicleColorValue(knownMap[x, y], x, y);
+            System.Drawing.Color tempColor = getVehicleColorValue(realImageMap[x, y], x, y);
 
             pathBitmap.SetPixel(x, y, tempColor);
 
         }
+
+
+
+
+        private void updateFrontView()
+        {
+            if ((previousX != 0) && (previousY != 0))
+            {
+                if (realMap[positionX, positionY] != knownMap[positionX, positionY])
+                {
+
+                    int directionX = positionX - previousX;
+                    int directionY = positionY - previousY;
+
+                    if ((directionX == -1) && (directionY == -1)) { updateFacingTopLeft(); }
+                    else if ((directionX == 0) && (directionY == -1)) { updateFacingTopMiddle(); }
+                    else if ((directionX == 1) && (directionY == -1)) { updateFacingTopRight(); }
+                    else if ((directionX == -1) && (directionY == 0)) { updateFacingMiddleLeft(); }
+                    else if ((directionX == 1) && (directionY == 0)) { updateFacingMiddleRight(); }
+                    else if ((directionX == -1) && (directionY == 1)) { updateFacingBottomLeft(); }
+                    else if ((directionX == 0) && (directionY == 1)) { updateFacingBottomMiddle(); }
+                    else if ((directionX == 1) && (directionY == 1)) { updateFacingBottomRight(); }
+                }
+            }
+        }
+
+        private void updateTile(int x , int y)
+        {
+            knownMap[x, y] = realMap[x, y];
+        }
+
+        private void updateFacingTopLeft()
+        {
+            updateTile(positionX - 1, positionY - 1);
+            updateTile(positionX - 2, positionY  );
+            updateTile(positionX + 1, positionY  + 1);
+            updateTile(positionX - 2, positionY - 2);
+        }
+
+        private void updateFacingTopMiddle()
+        {
+            updateTile(positionX - 1, positionY - 1);
+            updateTile(positionX , positionY - 1);
+            updateTile(positionX + 1, positionY - 1);
+            updateTile(positionX , positionY - 2);
+
+        }
+
+        private void updateFacingTopRight()
+        {
+            updateTile(positionX + 1, positionY - 1);
+            updateTile(positionX , positionY -2);
+            updateTile(positionX + 2, positionY );
+            updateTile(positionX + 2, positionY - 2);
+        }
+
+        private void updateFacingMiddleLeft()
+        {
+            updateTile(positionX - 1, positionY );
+            updateTile(positionX -1, positionY - 1);
+            updateTile(positionX - 1, positionY + 1);
+            updateTile(positionX -2, positionY );
+        }
+
+        private void updateFacingMiddleRight()
+        {
+            updateTile(positionX + 1, positionY);
+            updateTile(positionX + 1, positionY - 1);
+            updateTile(positionX + 1, positionY + 1);
+            updateTile(positionX + 2, positionY);
+        }
+
+        private void updateFacingBottomLeft()
+        {
+            updateTile(positionX -1, positionY + 1);
+            updateTile(positionX - 2, positionY );
+            updateTile(positionX , positionY + 2);
+            updateTile(positionX -2, positionY + 2);
+        }
+
+        private void updateFacingBottomMiddle()
+        {
+            updateTile(positionX , positionY + 1);
+            updateTile(positionX - 1, positionY + 1);
+            updateTile(positionX + 1, positionY + 1);
+            updateTile(positionX , positionY + 2);
+        }
+
+        private void updateFacingBottomRight()
+        {
+            updateTile(positionX + 1, positionY + 1);
+            updateTile(positionX + 2, positionY);
+            updateTile(positionX, positionY + 2);
+            updateTile(positionX + 2, positionY + 2);
+        }
+
 
 
         public void imageUpdate()
@@ -327,7 +439,7 @@ namespace Pathfinder_Prototype_2
             {
                 for (int y = 0; y < knownMap.GetLength(1); y++)
                 {
-                    System.Drawing.Color tempColor = getVehicleColorValue(knownMap[x, y], x, y);
+                    System.Drawing.Color tempColor = getVehicleColorValue(realImageMap[x, y], x, y);
 
                     bitmap.SetPixel(x, y, tempColor);
 
@@ -348,7 +460,7 @@ namespace Pathfinder_Prototype_2
             {
                 for (int y = 0; y < knownMap.GetLength(1); y++)
                 {
-                    System.Drawing.Color tempColor = getVehicleColorValue(knownMap[x, y] , x , y);
+                    System.Drawing.Color tempColor = getVehicleColorValue(realImageMap[x, y], x, y);
 
                     bitmap.SetPixel(x, y, tempColor);
 
@@ -375,7 +487,8 @@ namespace Pathfinder_Prototype_2
             if (gradient == 0)
             {
                 notKnown = true;
-                gradient = realMap[x, y];
+             //   gradient = realMap[x, y];
+                gradient = realImageMap[x, y];
             }
 
             if (gradient <= 1f)

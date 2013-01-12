@@ -67,13 +67,13 @@ namespace Pathfinder_Prototype_2
         {
             if ((startX + startY + targetX + targetY) == 0)
             {
-                pathfinder = new Pathfinder(hazardModel.getHazardModel(), 0, 0, r.Next(hazardModel.getHazardModel().GetLength(0)), r.Next(hazardModel.getHazardModel().GetLength(1)));
+                pathfinder = new Pathfinder(hazardModel.getHazardModel() , hazardModel.hazardModelImage, 0, 0, r.Next(hazardModel.getHazardModel().GetLength(0)), r.Next(hazardModel.getHazardModel().GetLength(1)));
             }
             else
             {
                 try
                 {
-                    pathfinder = new Pathfinder(hazardModel.getHazardModel(), startX, startY, targetX, targetY);
+                    pathfinder = new Pathfinder(hazardModel.getHazardModel(), hazardModel.hazardModelImage, startX, startY, targetX, targetY);
                 }
                 catch (Exception) { }
             }
@@ -84,7 +84,7 @@ namespace Pathfinder_Prototype_2
         {
       
 
-            Pathfinder pathfinder = new Pathfinder(hazardModel.getHazardModel(), startX, startY, endX, endY);
+            Pathfinder pathfinder = new Pathfinder(hazardModel.getHazardModel() , hazardModel.hazardModelImage, startX, startY, endX, endY);
 
             System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
 
@@ -110,7 +110,7 @@ namespace Pathfinder_Prototype_2
 
         public void startSimulation(int startX , int startY , int endX , int endY)
         {
-            rover = new Vehicle(hazardModel.getHazardModel());
+            rover = new Vehicle(hazardModel.getHazardModel() , hazardModel.hazardModelImage);
 
             System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
 
@@ -131,11 +131,11 @@ namespace Pathfinder_Prototype_2
 
         public void startSimulationDSTAR(int startX, int startY, int endX, int endY)
         {
-            rover = new Vehicle(hazardModel.getHazardModel());
+            rover = new Vehicle(hazardModel.getHazardModel() , hazardModel.hazardModelImage);
 
             System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
 
-            rover.traverseMap(startX, startY, endX, endY);
+            rover.traverseMapDstar(startX, startY, endX, endY);
 
             sw.Stop();
 
@@ -154,7 +154,7 @@ namespace Pathfinder_Prototype_2
         {
             if (stepTraverseStarted == false)
             {
-                rover = new Vehicle(hazardModel.getHazardModel());
+                rover = new Vehicle(hazardModel.getHazardModel() , hazardModel.hazardModelImage);
                 rover.startTraverse(startX, startY, endX, endY);
                 stepTraverseStarted = true;
             }
