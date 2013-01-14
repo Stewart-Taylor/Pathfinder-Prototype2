@@ -37,7 +37,6 @@ namespace Pathfinder_Prototype_2
 
         private Bitmap pathBitmap;
 
-    
 
         public int getSteps()
         {
@@ -67,7 +66,7 @@ namespace Pathfinder_Prototype_2
 
         public void startTraverse(int startXt, int startYt, int endXt, int endYt)
         {
-             steps = 0;
+            steps = 0;
 
             startX = startXt;
             startY = startYt;
@@ -79,10 +78,9 @@ namespace Pathfinder_Prototype_2
 
             knownMap = new float[realMap.GetLength(0), realMap.GetLength(1)];
 
-             atTarget = false;
-            
-             pathBitmap = new Bitmap(knownMap.GetLength(0), knownMap.GetLength(1));
-            
+            atTarget = false;
+
+            pathBitmap = new Bitmap(knownMap.GetLength(0), knownMap.GetLength(1));
         }
 
 
@@ -110,8 +108,6 @@ namespace Pathfinder_Prototype_2
 
                 givenPath = search.getPath();
 
-
-                
                 do
                 {
 
@@ -152,16 +148,11 @@ namespace Pathfinder_Prototype_2
                         break; 
                     }
 
-
-
-
                 }while(true);
 
 
             } while (atTarget == false);
           
-          //  generatePathImage();
-           
         }
 
 
@@ -179,17 +170,9 @@ namespace Pathfinder_Prototype_2
             positionX = startX;
             positionY = startY;
 
-
-
             bool atTarget = false;
 
-         //  DstarB search = new DstarB(knownMap); //new DStar(knownMap,positionX , positionY , targetX , targetY);
-          //  search.initialize(positionX, positionY, targetX, targetY);
-        //    search.Start(positionX, positionY, targetX, targetY);
-
-
-            DstarNew search = new DstarNew(knownMap, positionX, positionY, targetX, targetY);
-
+            Dstar search = new Dstar(knownMap, positionX, positionY, targetX, targetY);
 
            do
            {
@@ -197,8 +180,6 @@ namespace Pathfinder_Prototype_2
                search.replan(knownMap);
 
                givenPath = search.getPath();
-
-
 
                do
                {
@@ -239,8 +220,6 @@ namespace Pathfinder_Prototype_2
                    }
 
 
-
-
                } while (true);
 
 
@@ -252,53 +231,43 @@ namespace Pathfinder_Prototype_2
         }
 
 
-      
-
-
-
         public void traverseMapStep()
         {
+            SearchAlgorithm search;
 
-            SearchAlgorithm search; // = new AStar(knownMap,positionX , positionY , targetX , targetY);
+            search = new AStar(knownMap, positionX, positionY, targetX, targetY);
 
-            
-                search = new AStar(knownMap, positionX, positionY, targetX, targetY);
-
-                givenPath = search.getPath();
+            givenPath = search.getPath();
 
 
-                    if ((positionX == targetX) && (positionY == targetY))
-                    {
-                        atTarget = true;
-                        
-                    }
-                    if (givenPath.Count == 0)
-                    {
-                        atTarget = true;
-                 
-                    }
+            if ((positionX == targetX) && (positionY == targetY))
+            {
+                atTarget = true;
 
-                    PathNode nextNode = givenPath.Last();
-                    givenPath.Remove(nextNode);
+            }
+            if (givenPath.Count == 0)
+            {
+                atTarget = true;
 
-                    if (isNextNodeSafe(nextNode) == true)
-                    {
-                        positionX = nextNode.x;
-                        positionY = nextNode.y;
-                        takenPath.Add(nextNode);
+            }
 
-                        updateOwnMap(positionX, positionY);
-                    }
-                    else
-                    {
-                        updateOwnMap(nextNode.x, nextNode.y);
-                    }
+            PathNode nextNode = givenPath.Last();
+            givenPath.Remove(nextNode);
 
-           // generatePathImage();
+            if (isNextNodeSafe(nextNode) == true)
+            {
+                positionX = nextNode.x;
+                positionY = nextNode.y;
+                takenPath.Add(nextNode);
+
+                updateOwnMap(positionX, positionY);
+            }
+            else
+            {
+                updateOwnMap(nextNode.x, nextNode.y);
+            }
 
         }
-
-
 
 
         private bool isNextNodeSafe(PathNode node)
@@ -315,6 +284,7 @@ namespace Pathfinder_Prototype_2
             return false;
         }
 
+
         private void updateOwnMap(int x , int y)
         {
             knownMap[x, y] = realMap[x, y];
@@ -322,10 +292,7 @@ namespace Pathfinder_Prototype_2
             System.Drawing.Color tempColor = getVehicleColorValue(realImageMap[x, y], x, y);
 
             pathBitmap.SetPixel(x, y, tempColor);
-
         }
-
-
 
 
         private void updateFrontView()
@@ -369,7 +336,6 @@ namespace Pathfinder_Prototype_2
             updateTile(positionX , positionY - 1);
             updateTile(positionX + 1, positionY - 1);
             updateTile(positionX , positionY - 2);
-
         }
 
         private void updateFacingTopRight()
@@ -420,20 +386,15 @@ namespace Pathfinder_Prototype_2
             updateTile(positionX + 2, positionY + 2);
         }
 
-
-
         public void imageUpdate()
         {
-
             ((MainWindow)App.Current.MainWindow).img_main.Source = getPathImage();
-
         }
 
 
         private void generateImageQuick()
         {
             Bitmap bitmap = new Bitmap(knownMap.GetLength(0), knownMap.GetLength(1));
-
 
             for (int x = 0; x < knownMap.GetLength(0); x++)
             {
@@ -463,14 +424,11 @@ namespace Pathfinder_Prototype_2
                     System.Drawing.Color tempColor = getVehicleColorValue(realImageMap[x, y], x, y);
 
                     bitmap.SetPixel(x, y, tempColor);
-
                 }
-
             }
 
             pathBitmap = bitmap;
         }
-
 
         private System.Drawing.Color getVehicleColorValue(float gradient, int x, int y)
         {
@@ -482,12 +440,10 @@ namespace Pathfinder_Prototype_2
             float red = 255;
             float blue = 0;
 
-
             bool notKnown = false;
             if (gradient == 0)
             {
                 notKnown = true;
-             //   gradient = realMap[x, y];
                 gradient = realImageMap[x, y];
             }
 
@@ -524,7 +480,6 @@ namespace Pathfinder_Prototype_2
                     green = 0;
                     blue = 255;
                 }
-
             }
 
 
@@ -538,19 +493,18 @@ namespace Pathfinder_Prototype_2
             return color;
         }
 
+
         public ImageSource getPathImage()
         {
             MemoryStream ms = new MemoryStream();
             pathBitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
             ms.Position = 0;
-            BitmapImage bi = new BitmapImage();
-            bi.BeginInit();
-            bi.StreamSource = ms;
-            bi.EndInit();
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.StreamSource = ms;
+            bitmap.EndInit();
 
-            ImageSource img = bi;
-
-            return img;
+            return bitmap;
         }
 
     }

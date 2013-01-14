@@ -57,9 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AStar.cs" />
-    <Compile Include="DStar.cs" />
-    <Compile Include="DStarB.cs" />
-    <Compile Include="DstarNew.cs" />
+    <Compile Include="Dstar.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="Pathfinder.cs" />
     <Compile Include="PathNode.cs" />

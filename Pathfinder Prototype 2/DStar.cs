@@ -2,446 +2,329 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Collections;
 
 namespace Pathfinder_Prototype_2
 {
-    public enum Tag
+    class Dstar : SearchAlgorithm
     {
-        NEW,
-        CLOSED,
-        OPEN
-    };
+        List<Node> closed = new List<Node>();
+        List<Node> open = new List<Node>();
+        List<Node> hazard = new List<Node>();
 
-    //    Used to represent values for each square.
-    public class Node
-    {
-        public int i = 0;         // x location
-        public int j = 0;         // y location
-        public Node parent = null;      // Parent with lowest cost
-        public int Gcost = 0;         // Distance cost
-        public int Hcost = 0;         // Heuristic
-        public int value = 0;         // V = G + H
-        public bool passed = false;     // Open list marker
-        public Tag tag = Tag.NEW;
-    }
+        public class Node
+        {
+            public int f()
+            {
+                return g + h;
+            }
+            public int g;
+            public int h;
+            public int x;
+            public int y;
+            public Node parent;
+        }
 
-    class DStar
-    {
-        Node goal;
-        Node start;
-        public Node[,] node_array;
-        public float[,] actual_cost_array;
-        public bool STARTED;
-        int k_min;
+
         Node current;
+        Node target;
 
-        List<Node> node_list;
-
-
-        int xLength;
-        int yLength;
-
-        public DStar(float[,] knownMap)
+        public Dstar(float[,] gridT, int startXT, int startYT, int targetXT, int targetYT) : base(gridT, startXT, startYT, targetXT, targetYT)
         {
-            goal = new Node();
-            start = new Node();
+            grid = gridT;
+            startX = startXT;
+            startY = startYT;
+            targetX = targetXT;
+            targetY = targetYT;
 
-            xLength = knownMap.GetLength(0);
-            yLength = knownMap.GetLength(1);
 
-            node_list = new List<Node>();
-            node_array = new Node[xLength, yLength];
-            actual_cost_array = new float[xLength, yLength];
+            current = new Node();
+            target = new Node();
+            target.x = targetX;
+            target.y = targetY;
 
-            for (int y = 0; y < yLength; y++)
-            {
-                for (int x = 0; x < xLength; x++)
-                {
-                    node_array[y, x] = new Node();
-                    node_array[y, x].i = y;
-                    node_array[y, x].j = x;
-                    node_array[y, x].tag = Tag.NEW;
-                    node_array[y, x].Gcost = 1;
-                    node_array[y, x].Hcost = 0;
-                }
-            }
 
-            STARTED = false;
         }
 
 
+   
 
-        //Does the initial D* setup.
-        public void Start(int start_x, int start_y, int end_x, int end_y)
+
+        public void updateVertex(int x , int y)
         {
-            //Begin setup.
-            goal = node_array[end_x, end_y];
-            start = node_array[start_x, start_y];
-            Insert(goal, 0);
+            Node n = new Node();
+            n.x = x;
+            n.y = y;
 
-            int k_min = 0;
+            hazard.Add(n);
 
-            while (start.tag != Tag.CLOSED && k_min != -1)
-            {
-                k_min = ProcessState();
-            }
-
-            current = start;
-            STARTED = true;
-            this.k_min = 0;
         }
 
-        public PathNode Think(float[,] actual_cost_array)
+
+        public void replan(float[,] gridT)
         {
-            //Updates with percepts.
-            this.actual_cost_array = actual_cost_array;
-            Node move = null;
-            
 
-            //Begin the dynamic portion of D*.   Procede until you reach goal.
-            if (!Equal(current, goal))
+            grid = gridT;
+
+            computeShortestPath();
+
+        }
+
+
+        public void computeShortestPath()
+        {
+
+            open.Clear();
+            closed.Clear();
+
+            if (((startX == targetX) && (startY == targetY)) == false)
             {
-                bool found_move = false;
 
-                //D* will loop till it can make one move.
-                while (!found_move)
+                bool found = false; // used to determine if path is found
+
+  
+
+
+                //puts the start item in list
+                open.Add(current);
+
+                do
                 {
-                    int estimated_cost = current.Hcost - current.parent.Hcost;
-                    float actual_cost = actual_cost_array[current.parent.i, current.parent.j];
+                    // This call places the lowest f at the bottom
 
-
-                    if (estimated_cost != actual_cost)
+                    open.Sort(
+                    delegate(Node x, Node y)
                     {
-                        //Update the cost model to reflect actual cost.
-                        ModifyCost(current.parent, current, actual_cost);
+                        return x.f() - y.f();
+                    });
 
-                        //Propogate the cost change out.
-                        int kk_min = -2;
-                        int h_cost = current.Hcost;
 
-                        while (kk_min < h_cost)
+                    // Get the node with the lowest TotalCost
+                    current = open[0];
+
+                    if (current.x == target.x)
+                    {
+                        if (current.y == target.y)
                         {
-                            if (kk_min != -1)
-                            {
-                                kk_min = ProcessState();
-                                h_cost = current.Hcost;
-                            }
-                            else
-                            {
-                                //Error,  path cannot be found.    
-                                break;
-                            }
+                            found = true;
+                            break;
                         }
                     }
 
-                    //Delete(current);
-                    move = current;
-                    node_list.Add(current);         //Make the move.
-                    current = current.parent;
-                    found_move = true;
+                    checkAdjacent(current.x, current.y, open, closed, current);
 
-                    UpdateWithPercepts(current, actual_cost_array);
-                }
 
-            }
-            else
-            {
-                STARTED = false;
-            }
+                    //remove a from the open list and move into the 'closed' list
+                    open.Remove(current);
+                    closed.Add(current);
 
-            PathNode nodeTemp = null;
-            if (move != null)
-            {
-                nodeTemp = new PathNode();
-                nodeTemp.x = move.i;
-                nodeTemp.y = move.j;
-            }
 
-            return nodeTemp;
-        }
+                } while (open.Count > 0); // Keeps going until the open list is empty
 
-        //Updates the cells around Zippy within his percept range based on percept knowledge.
-        public void UpdateWithPercepts(Node s, float[,] actual_cost_array)
-        {
-            int x_start = s.j - 2;
-            if (x_start < 0)
-            {
-                x_start = 0;
-            }
 
-            int x_end = s.j + 3;
-            if (x_end > xLength)
-            {
-                x_end = xLength;
-            }
 
-            int y_start = s.i - 2;
-            if (y_start < 0)
-            {
-                y_start = 0;
-            }
-            int y_end = s.i + 3;
-            if (y_end > yLength)
-            {
-                y_end = yLength;
-            }
-
-            for (int y = y_start; y < y_end; y++)
-            {
-                for (int x = x_start; x < x_end; x++)
+                // if a path was found the path is worked out then returned
+                if (found == true)
                 {
 
-                    node_array[y, x].Gcost = (int)actual_cost_array[x, y];
-                   
-                    if (actual_cost_array[y, x] <= 6)
+                    foreach (Node n in closed)
                     {
-                        node_array[y, x].Gcost = (int)actual_cost_array[x, y];
-                    }
-                    else
-                    {
-                       node_array[y, x].Gcost = 768;
-                    }
-                    
-                   
-                }
-            }
-        }
+                        PathNode pathNode = new PathNode();
+                        pathNode.x = current.x;
+                        pathNode.y = current.y;
 
-        /** Core function of the D* search algorithm. Propogates g-costs.*/
-        int ProcessState()
-        {
-            Node X = MinState();
+                        pathNodes.Add(pathNode);
 
-            if (X == null)
-            {
-                return -1;
-            }
-
-            List<Node> neighbors = Successors(X);
-
-            int k_old = GetKMin();
-            Delete(X);						//Removes min-state from open list.
-
-            if (k_old < X.Hcost)
-            {
-                foreach (Node Y in neighbors)
-                {
-                    if (Y.Hcost <= k_old && X.Hcost > (Y.Hcost + c(Y, X)))
-                    {
-                        X.parent = Y;
-                        X.Hcost = Y.Hcost + c(Y, X);
-                    }
-                }
-            }
-            if (k_old == X.Hcost)
-            {
-                foreach (Node Y in neighbors)
-                {
-                    if ((Y.tag == Tag.NEW) ||
-                        ((Y.parent == X) && Y.Hcost != (X.Hcost + c(X, Y))) ||
-                        ((Y.parent != X) && Y.Hcost > (X.Hcost + c(X, Y))))
-                    {
-
-                        Y.parent = X;
-                        Insert(Y, X.Hcost + c(X, Y));
-                    }
-                }
-            }
-            else
-            {
-                foreach (Node Y in neighbors)
-                {
-                    if (Y.tag == Tag.NEW ||
-                        ((Y.parent == X) && (Y.Hcost != (X.Hcost + c(X, Y)))))
-                    {
-                        Y.parent = X;
-                        Insert(Y, X.Hcost + c(X, Y));
-                    }
-                    else
-                    {
-                        if ((Y.parent != X) && (Y.Hcost > (X.Hcost + c(X, Y))))
+                        if (current.parent == null)
                         {
-                            Insert(X, X.Hcost);
+                            break;
+                        }
+                        current = current.parent;
+                    }
+
+
+                    /*
+                    do
+                    {
+                        PathNode pathNode = new PathNode();
+                        pathNode.x = current.x;
+                        pathNode.y = current.y;
+
+                        pathNodes.Add(pathNode);
+
+                        if (current.parent.Equals(null))
+                        {
+                            // path.Add(new int[2] { current.x, current.y });
+                            current = current.parent;
                         }
                         else
                         {
-                            if ((Y.parent != X) &&
-                                (X.Hcost > (Y.Hcost + c(Y, X))) &&
-                                (Y.tag == Tag.CLOSED) &&
-                                (Y.Hcost > k_old))
-                            {
-                                Insert(Y, Y.Hcost);
-                            }
+                            closed.Clear();
                         }
-                    }
+
+                    } while (closed.Count > 0);
+                    */
                 }
+
+
             }
 
-            return GetKMin();
+
         }
 
-        /** Updates the cost function for a particular node arc. */
-        int ModifyCost(Node X, Node Y, float cval)
-        {
-            X.Gcost = (int)cval;
 
-            if (X.tag == Tag.CLOSED)
+
+        public void updateStart(int startX , int startY )
+        {
+            current.x = startX;
+            current.y = startY;
+
+
+        }
+
+
+        private void checkAdjacent(int x, int y, List<Node> open, List<Node> closed, Node parent)
+        {
+
+            if (checkTile((x - 1), (y), open, closed) == true)  //MIDDLE LEFT
             {
-                Insert(X, X.Hcost);
+                createNewNode((x - 1), y, 10, open, parent);
+
             }
 
-            return GetKMin();
+            if (checkTile((x + 1), y, open, closed) == true) //MIDDLE RIGHT
+            {
+                createNewNode((x + 1), y, 10, open, parent);
+
+            }
+
+            if (checkTile((x), (y + 1), open, closed) == true) // MIDDLE BOTTOM
+            {
+                createNewNode((x), (y + 1), 10, open, parent);
+
+            }
+
+            if (checkTile((x), (y - 1), open, closed) == true) // MIDDLE TOP
+            {
+                createNewNode((x), (y - 1), 10, open, parent);
+
+            }
+
+            if (checkTile((x - 1), (y - 1), open, closed) == true)    //TOP LEFT
+            {
+                createNewNode((x - 1), (y - 1), 14, open, parent);
+            }
+
+
+
+            if (checkTile((x - 1), (y + 1), open, closed) == true)   // BOTTOM LEFT
+            {
+                createNewNode((x - 1), (y + 1), 14, open, parent);
+            }
+
+
+            if (checkTile((x + 1), (y - 1), open, closed) == true) //TOP RIGHT
+            {
+
+                createNewNode((x + 1), (y - 1), 14, open, parent);
+            }
+
+
+
+            if (checkTile((x + 1), (y + 1), open, closed) == true)  //BOTTOM RIGHT
+            {
+                createNewNode((x + 1), (y + 1), 14, open, parent);
+            }
         }
 
-        //Returns the state with the lowest k-value in the open node list.
-        Node MinState()
-        {
-            Node min_state = null;
-            float key = 9999999.0f;
 
-            for (int y = 0; y < yLength; y++)
+        private void createNewNode(int x, int y, int value, List<Node> open, Node parent)
+        {
+
+            Node newNode = new Node();
+            newNode.x = x;
+            newNode.y = y;
+            newNode.g = (int)(grid[x, y]);
+            newNode.h = estimateDistance(x, y, target);
+            newNode.parent = parent;
+
+
+            open.Add(newNode);
+        }
+
+
+
+        private bool checkTile(int x, int y, List<Node> closed, List<Node> open)
+        {
+
+            if (x < 0)
             {
-                for (int x = 0; x < xLength; x++)
+                return false;
+            }
+            if (y < 0)
+            {
+                return false;
+            }
+            if (x > grid.GetLength(0) - 1)
+            {
+                return false;
+            }
+            if (y > grid.GetLength(1) - 1)
+            {
+                return false;
+            }
+
+            foreach (Node node in closed) // Loop through List with foreach
+            {
+                if (node.x == x)
                 {
-                    Node s = node_array[y, x];
-
-                    if (s.value < key && s.tag == Tag.OPEN)
+                    if (node.y == y)
                     {
-                        key = s.value;
-                        min_state = s;
+                        return false;
                     }
                 }
             }
 
-            return min_state;
+            foreach (Node node in open) // Loop through List with foreach
+            {
+                if (node.x == x)
+                {
+                    if (node.y == y)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            foreach (Node node in hazard) // Loop through List with foreach
+            {
+                if (node.x == x)
+                {
+                    if (node.y == y)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+
+            return true;
         }
 
-        /** Returns the lowest k-value on the open list.*/
-        int GetKMin()
+
+
+
+
+        private int estimateDistance(int currentX, int currentY, Node target)
         {
-            Node min_state = MinState();
-            if (min_state != null)
-            {
-                return MinState().value;
-            }
 
-            return -1;
-        }
+            return (Math.Abs(currentX- target.x) + Math.Abs(currentY - target.y));
 
-        /** Adds a node to the open list. */
-        void Insert(Node state, int h_new)
-        {
-            if (state.tag == Tag.NEW)
-            {
-                state.value = h_new;
-            }
-            else if (state.tag == Tag.OPEN)
-            {
 
-                state.value = Min(state.value, h_new);
-            }
-            else if (state.tag == Tag.CLOSED)
-            {
-                state.value = Min(state.Hcost, h_new);
-            }
 
-            state.Hcost = h_new;
-            state.tag = Tag.OPEN;
-
-        }
-
-        /** Removes a node from the open list. */
-        void Delete(Node state)
-        {
-            node_array[state.i, state.j].tag = Tag.CLOSED;
-        }
-
-        /** Returns the minimum of two values. */
-        int Min(int x, int y)
-        {
-            if (x < y)
-            {
-                return x;
-            }
-
-            return y;
-        }
-
-        /** Returns the arc cost from y to x. */
-        int c(Node X, Node Y)
-        {
-            return node_array[X.i, X.j].Gcost;
-            //return 1;
-        }
-
-        /** Compares to squares by (x,y) location. */
-        bool Equal(Node one, Node two)
-        {
-            if (one.i == two.i && one.j == two.j)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        /** Returns all possible successor states of the current state. */
-        List<Node> Successors(Node current)
-        {
-            List<Node> successors = new List<Node>();
-
-            int x = current.j;
-            int y = current.i;
-
-            //Right
-            if ((x + 1) <= 31)
-            {
-                Node square = node_array[y, x + 1];
-                successors.Add(square);
-            }
-
-            //Left
-            if ((x - 1) >= 0)
-            {
-                Node square = node_array[y, x - 1];
-                successors.Add(square);
-            }
-
-            //Up
-            if ((y + 1) <= 23)
-            {
-                Node square = node_array[y + 1, x];
-                successors.Add(square);
-            }
-
-            //Down
-            if ((y - 1) >= 0)
-            {
-                Node square = node_array[y - 1, x];
-                successors.Add(square);
-            }
-
-            return successors;
         }
 
 
 
-        public List<PathNode> getPath()
-        {
-            List<PathNode> path = new List<PathNode>();
-
-
-
-            foreach (Node n in node_list)
-            {
-                PathNode newNode = new PathNode();
-                newNode.x = n.i;
-                newNode.y = n.j;
-            }
-
-            return path;
-        }
 
     }
 }

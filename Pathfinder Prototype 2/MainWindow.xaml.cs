@@ -48,6 +48,10 @@ namespace Pathfinder_Prototype_2
             {
                 path = "Models//model2_w1024_h0.1_v0.01.ppm";
             }
+            else if (cmb_elevationMap.SelectedIndex == 2)
+            {
+                path = "Models//scr_000.ppm";
+            }
 
             return path;
         }

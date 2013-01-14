@@ -9,6 +9,7 @@
         <ComboBox x:Name="cmb_elevationMap" HorizontalAlignment="Right" Margin="0,30,8,0" VerticalAlignment="Top" Width="152" RenderTransformOrigin="0.487,0.683"  SelectionChanged="elvmapchanged">
     			<ComboBoxItem Content="Map A - 512"  />
     			<ComboBoxItem Content="Map B - 1024" />
+                <ComboBoxItem Content="Map C - 1024" />
     	</ComboBox>
         <ComboBox x:Name="cmb_slopeAlgorithm" HorizontalAlignment="Right" Margin="0,94,8,0" VerticalAlignment="Top" Width="152" SelectionChanged="cmb_slopeAlgorithm_SelectionChanged">
     		    <ComboBoxItem Content="Maximum"  />
