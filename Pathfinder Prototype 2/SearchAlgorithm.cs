@@ -19,17 +19,13 @@ namespace Pathfinder_Prototype_2
        public SearchAlgorithm(float[,] grid, int startX, int startY, int targetX, int targetY)
        {
 
-           
        }
 
        public List<PathNode> getPath()
        {
            return pathNodes;
-
        }
 
-      
-
-
+  
     }
 }

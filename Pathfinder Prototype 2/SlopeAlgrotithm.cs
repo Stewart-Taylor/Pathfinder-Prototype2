@@ -7,7 +7,6 @@ namespace Pathfinder_Prototype_2
 {
     abstract class SlopeAlgrotithm
     {
-
         protected float[,] heightMap;
         protected float[,] slopeModel;
         protected int height;
@@ -20,10 +19,8 @@ namespace Pathfinder_Prototype_2
             width = heightMap.GetLength(0);
             height = heightMap.GetLength(1);
 
-
             generateSlopeModel();
         }
-
 
 
         protected void generateSlopeModel()
@@ -37,14 +34,11 @@ namespace Pathfinder_Prototype_2
                     slopeModel[x, y] = calculateSlopeValue(x,y);
                 }
             }
-
         }
-
 
 
         protected virtual float calculateSlopeValue(int x, int y)
         {
-
             float topLeft = getTopLeftSlope(x, y);
             float topMid = getTopMiddleSlope(x, y);
             float topRight = getTopRightSlope(x, y);
@@ -55,7 +49,6 @@ namespace Pathfinder_Prototype_2
             float botLeft = getBottomLeftSlope(x, y);
             float botMid = getBottomMiddleSlope(x, y);
             float botRight = getBottomRightSlope(x, y);
-
 
             float high = 0f;
 
@@ -68,15 +61,12 @@ namespace Pathfinder_Prototype_2
             if (botMid >= high) { high = botMid; }
             if (botRight >= high) { high = botRight; }
 
-
             float total = topLeft + topRight + topMid + midLeft + midRight + botLeft + botMid + botRight;
 
-            // float value = total / 8;
             float value = high;
 
             return value;
         }
-
 
 
         private float getGradientValue(float x, float y)

@@ -16,9 +16,9 @@ namespace Pathfinder_Prototype_2
         private List<PathNode> takenPath = new List<PathNode>();
         private List<PathNode> givenPath = new List<PathNode>();
 
-        float[,] knownMap;
-        float[,] realMap;
-        float[,] realImageMap;
+        private float[,] knownMap;
+        private float[,] realMap;
+        private float[,] realImageMap;
 
         private int positionX;
         private int positionY;
@@ -38,6 +38,8 @@ namespace Pathfinder_Prototype_2
         private Bitmap pathBitmap;
 
 
+        #region GET
+
         public int getSteps()
         {
             return steps;
@@ -53,6 +55,9 @@ namespace Pathfinder_Prototype_2
             return positionY;
         }
 
+        #endregion
+
+
         public Vehicle(float[,] realMapT , float[,] imageMap )
         {
             realMap = realMapT;
@@ -61,8 +66,6 @@ namespace Pathfinder_Prototype_2
 
             pathBitmap = new Bitmap(knownMap.GetLength(0), knownMap.GetLength(1));  
         }
-
-
 
         public void startTraverse(int startXt, int startYt, int endXt, int endYt)
         {
@@ -86,7 +89,7 @@ namespace Pathfinder_Prototype_2
 
         public void traverseMap(int startXt, int startYt, int endXt, int endYt)
         {
-             steps = 0;
+            steps = 0;
 
             startX = startXt;
             startY = startYt;
@@ -96,11 +99,9 @@ namespace Pathfinder_Prototype_2
             positionX = startX;
             positionY = startY;
 
-
-
             bool atTarget = false;
 
-            SearchAlgorithm search ; // = new AStar(knownMap,positionX , positionY , targetX , targetY);
+            SearchAlgorithm search;
 
             do
             {
@@ -110,12 +111,12 @@ namespace Pathfinder_Prototype_2
 
                 do
                 {
-
                     if (steps >= 1600)
                     {
                         atTarget = true;
                         break;
                     }
+
                     steps++;
 
                     if( (positionX == targetX) && (positionY == targetY))
@@ -128,6 +129,7 @@ namespace Pathfinder_Prototype_2
                         atTarget = true;
                         break;
                     }
+
                     PathNode nextNode = givenPath.Last();
                     givenPath.Remove(nextNode);
 
@@ -152,11 +154,7 @@ namespace Pathfinder_Prototype_2
 
 
             } while (atTarget == false);
-          
         }
-
-
-
 
         public void traverseMapDstar(int startXt, int startYt, int endXt, int endYt)
         {
@@ -183,7 +181,6 @@ namespace Pathfinder_Prototype_2
 
                do
                {
-
                    if (steps >= 1600)
                    {
                        atTarget = true;
@@ -219,15 +216,10 @@ namespace Pathfinder_Prototype_2
                        break;
                    }
 
-
                } while (true);
-
-
            } while (atTarget == false);
           
-            
             generatePathImage();
-            
         }
 
 
@@ -243,8 +235,8 @@ namespace Pathfinder_Prototype_2
             if ((positionX == targetX) && (positionY == targetY))
             {
                 atTarget = true;
-
             }
+
             if (givenPath.Count == 0)
             {
                 atTarget = true;
@@ -301,7 +293,6 @@ namespace Pathfinder_Prototype_2
             {
                 if (realMap[positionX, positionY] != knownMap[positionX, positionY])
                 {
-
                     int directionX = positionX - previousX;
                     int directionY = positionY - previousY;
 
@@ -317,6 +308,7 @@ namespace Pathfinder_Prototype_2
             }
         }
 
+
         private void updateTile(int x , int y)
         {
             knownMap[x, y] = realMap[x, y];
@@ -329,6 +321,7 @@ namespace Pathfinder_Prototype_2
             updateTile(positionX + 1, positionY  + 1);
             updateTile(positionX - 2, positionY - 2);
         }
+
 
         private void updateFacingTopMiddle()
         {
@@ -386,6 +379,7 @@ namespace Pathfinder_Prototype_2
             updateTile(positionX + 2, positionY + 2);
         }
 
+
         public void imageUpdate()
         {
             ((MainWindow)App.Current.MainWindow).img_main.Source = getPathImage();
@@ -415,7 +409,6 @@ namespace Pathfinder_Prototype_2
         public void generatePathImage()
         {
             Bitmap bitmap = new Bitmap(knownMap.GetLength(0), knownMap.GetLength(1));
-
 
             for (int x = 0; x < knownMap.GetLength(0); x++)
             {
@@ -449,9 +442,7 @@ namespace Pathfinder_Prototype_2
 
             if (gradient <= 1f)
             {
-
                 red = (1f - gradient) * 255;
-
             }
             else if (gradient <= 3f)
             {
@@ -469,7 +460,6 @@ namespace Pathfinder_Prototype_2
             {
                 green = ((float)green * 0.3f);
                 red = ((float)red * 0.3f);
-
             }
 
             foreach (PathNode n in takenPath)
@@ -481,7 +471,6 @@ namespace Pathfinder_Prototype_2
                     blue = 255;
                 }
             }
-
 
             if( (targetX == x) && ( targetY ==y))
             {

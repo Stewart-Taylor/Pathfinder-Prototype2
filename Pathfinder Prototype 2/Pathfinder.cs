@@ -19,12 +19,12 @@ namespace Pathfinder_Prototype_2
         private float[,] hazardModel;
         private float[,] hazardImageModel;
 
-        List<PathNode> pathNodes = new List<PathNode>();
+        private List<PathNode> pathNodes = new List<PathNode>();
 
-        int startX;
-        int startY;
-        int targetX;
-        int targetY;
+        private int startX;
+        private int startY;
+        private int targetX;
+        private int targetY;
 
 
         public int getSteps()
@@ -39,10 +39,6 @@ namespace Pathfinder_Prototype_2
 
             width = hazardModel.GetLength(0);
             height = hazardModel.GetLength(1);
-
-            // findPath(startX , startY , targetX , targetY);
-           // generatePathImage();
-
 
             startX = startXT;
             startY = startYT;
@@ -63,22 +59,14 @@ namespace Pathfinder_Prototype_2
         {
             SearchAlgorithm aStar = new AStar(hazardModel , startX , startY , targetX , targetY);
 
-            
-
             pathNodes = aStar.getPath();
         }
-
-
-
-
-
 
 
         public void generatePathImage()
         {
             Bitmap bitmap = new Bitmap(width, height);
 
-            
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -86,9 +74,7 @@ namespace Pathfinder_Prototype_2
                     System.Drawing.Color tempColor = getPathColorValue(hazardImageModel[x, y], x, y);
 
                     bitmap.SetPixel(x, y, tempColor);
-                 
                 }
-            
             }
 
             pathBitmap = bitmap;
@@ -105,15 +91,11 @@ namespace Pathfinder_Prototype_2
             float red = 255;
             float blue = 0;
 
-
             bool notKnown = false;
-
 
             if (gradient <= 1f)
             {
-
                 red = (1f - gradient) * 255;
-
             }
             else if (gradient <= 3f)
             {
@@ -131,7 +113,6 @@ namespace Pathfinder_Prototype_2
             {
                 green = ((float)green * 0.3f);
                 red = ((float)red * 0.3f);
-
             }
 
             foreach (PathNode n in pathNodes)
@@ -142,9 +123,7 @@ namespace Pathfinder_Prototype_2
                     green = 0;
                     blue = 255;
                 }
-
             }
-
 
             if ((targetX == x) && (targetY == y))
             {
@@ -155,9 +134,6 @@ namespace Pathfinder_Prototype_2
 
             return color;
         }
-
-
-
 
         public ImageSource getPathImage()
         {

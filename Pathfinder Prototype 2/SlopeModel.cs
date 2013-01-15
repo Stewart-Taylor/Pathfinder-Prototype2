@@ -11,19 +11,18 @@ namespace Pathfinder_Prototype_2
 {
     class SlopeModel
     {
-        int width;
-        int height;
+        private int width;
+        private int height;
 
-        float[,] model;
-        float[,] slopeModel;
+        private float[,] model;
+        private float[,] slopeModel;
 
+        private Bitmap slopeBitmap;
+        private Bitmap image;
+        private float lowestGradient;
+        private float highestGradient;
 
-        Bitmap slopeBitmap;
-        Bitmap image;
-        float lowestGradient;
-        float highestGradient;
-
-        string algorithmType;
+        private string algorithmType;
 
         public SlopeModel(float[,] modelT , string type)
         {
@@ -38,9 +37,6 @@ namespace Pathfinder_Prototype_2
 
             generateSlopeModel();
         }
-
-
-
 
 
         private void generateSlopeModel()
@@ -91,7 +87,6 @@ namespace Pathfinder_Prototype_2
         }
 
 
-
         private void getGradientLimits()
         {
             float low = slopeModel[0,0];
@@ -118,7 +113,6 @@ namespace Pathfinder_Prototype_2
         }
 
 
-
         private System.Drawing.Color getSlopeColorValue(float gradient)
         {
             System.Drawing.Color color = System.Drawing.Color.White;
@@ -128,7 +122,6 @@ namespace Pathfinder_Prototype_2
             float green = 255;
             float red = 255;
             float blue = 0;
-
 
 
             if (gradient <= 1f)
@@ -148,17 +141,11 @@ namespace Pathfinder_Prototype_2
                 green = 0;
             }
 
-           
- 
-
+  
             color = System.Drawing.Color.FromArgb(255, (int)red, (int)green, (int)blue);
 
             return color;
         }
-
-
-
-      
 
 
         public float[,] getSlopeModel()

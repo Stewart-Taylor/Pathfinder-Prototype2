@@ -24,24 +24,29 @@ namespace Pathfinder_Prototype_2
         private Vehicle rover;
         private int steps;
 
-        ImageSource imageSource;
+        private ImageSource imageSource;
 
         private String timeTaken;
+
+        #region GET
+
         public String getTimeTaken()
         {
             return timeTaken;
         }
+
         public int getSteps()
         {
             return steps;
         }
+
+        #endregion
 
 
         public PathfinderController()
         {
           
         }
-
 
         public void loadElevationModel(String path)
         {
@@ -53,6 +58,7 @@ namespace Pathfinder_Prototype_2
         {
             slopeModel = new SlopeModel(elevationLoader.getHeightMap(), slopeType);
         }
+
 
         public void loadHazardModel(int chunkSize)
         {
@@ -82,8 +88,6 @@ namespace Pathfinder_Prototype_2
 
         public void startSimulationKnownMap(int startX, int startY, int endX, int endY)
         {
-      
-
             Pathfinder pathfinder = new Pathfinder(hazardModel.getHazardModel() , hazardModel.hazardModelImage, startX, startY, endX, endY);
 
             System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
@@ -126,7 +130,6 @@ namespace Pathfinder_Prototype_2
 
             stepTraverseStarted = false;
         }
-
 
 
         public void startSimulationDSTAR(int startX, int startY, int endX, int endY)

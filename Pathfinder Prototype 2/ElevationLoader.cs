@@ -19,33 +19,23 @@ namespace Pathfinder_Prototype_2
         private int imageStartIndex;
 
         private bool p6Valid = true;
-
         private Bitmap image;
-
         private float[,] heightMap;
-
-
         private float verticalHeight = 0.1f; // 0.1m
-
-
+       
         private float maxHeight = -1;
-
         private float minHeight = 0;
+
+
 
         public ElevationLoader(String imagePath)
         {
-
             byte[] bytes = getBytesFromFile(imagePath);
-
             String hexData = HexStr(bytes);
-
             hexMap = createHexArray(hexData);
 
             getHeaderType();
-
             getDimensions();
-
-
 
             generateHeightMap();
             generateBitmap();
@@ -67,7 +57,6 @@ namespace Pathfinder_Prototype_2
                 }
             }
         }
-
 
         private void getDimensions()
         {
@@ -93,7 +82,6 @@ namespace Pathfinder_Prototype_2
             }
 
             String widthValue = "";
-
             for (int i = 0; i < widthIndex + 1; i++)
             {
                 if (widthData[i] != null)
@@ -105,7 +93,6 @@ namespace Pathfinder_Prototype_2
                     break;
                 }
             }
-
 
 
             int heightIndex = 0;
@@ -124,7 +111,6 @@ namespace Pathfinder_Prototype_2
             }
 
             String heightValue = "";
-
             for (int i = 0; i < heightIndex + 1; i++)
             {
                 if (heightData[i] != null)
@@ -137,7 +123,6 @@ namespace Pathfinder_Prototype_2
                 }
             }
 
-
             width = Int32.Parse(widthValue);
             height = Int32.Parse(heightValue);
 
@@ -145,10 +130,6 @@ namespace Pathfinder_Prototype_2
 
             String val = hexMap[imageStartIndex];
         }
-
-
-
-
 
 
         private String[] createHexArray(String hexData)
@@ -171,7 +152,6 @@ namespace Pathfinder_Prototype_2
         public static byte[] getBytesFromFile(string fullFilePath)
         {
             // this method is limited to 2^32 byte files (4.2 GB)
-
             FileStream fs = File.OpenRead(fullFilePath);
             try
             {
@@ -184,37 +164,26 @@ namespace Pathfinder_Prototype_2
             {
                 fs.Close();
             }
-
         }
-
 
 
         public static string HexStr(byte[] p)
         {
-
             char[] c = new char[p.Length * 2 + 2];
-
             byte b;
 
             // c[0] = '0'; c[1] = 'x';
 
             for (int y = 0, x = 2; y < p.Length; ++y, ++x)
             {
-
                 b = ((byte)(p[y] >> 4));
-
                 c[x] = (char)(b > 9 ? b + 0x37 : b + 0x30);
-
                 b = ((byte)(p[y] & 0xF));
-
                 c[++x] = (char)(b > 9 ? b + 0x37 : b + 0x30);
-
             }
 
             return new string(c);
-
         }
-
 
 
         private void generateHeightMap()
@@ -248,16 +217,11 @@ namespace Pathfinder_Prototype_2
                 x = 0;
 
             } while (y < height);
-
         }
-
-
 
         private float getHeight(int red, int green)
         {
             float height = 0;
-
-
             height = ((red * 256 + green));
 
             return height;
@@ -266,7 +230,6 @@ namespace Pathfinder_Prototype_2
 
         private void setMaxHeight()
         {
-
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -310,39 +273,29 @@ namespace Pathfinder_Prototype_2
                     int value = getHeightColor(heightTemp);
 
                     System.Drawing.Color tempColor = System.Drawing.Color.FromArgb(255, value, value, value);
-
                     bitmap.SetPixel(x, y, tempColor);
                 }
             }
-
-
 
             image = bitmap;
         }
 
 
-
         public int getHeightColor(float height)
         {
             float valueR = height - minHeight;
-
             float valueT = (valueR / (maxHeight - minHeight));
             float tempNumber = valueT * 255f;
 
-            // int tempNumber = Int32.Parse(temp);
             return (int)tempNumber;
         }
 
         public int getColorValue(String hex)
         {
-            // String temp = System.Convert.ToChar(System.Convert.ToUInt32(hex.Substring(0, 2), 16)).ToString();
-
             int tempNumber = int.Parse(hex, System.Globalization.NumberStyles.HexNumber);
 
-            // int tempNumber = Int32.Parse(temp);
             return tempNumber;
         }
-
 
 
         public Bitmap getBitmap()
@@ -353,8 +306,6 @@ namespace Pathfinder_Prototype_2
 
         public ImageSource getImageSource()
         {
-
-
             MemoryStream ms = new MemoryStream();
             image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
             ms.Position = 0;
@@ -367,8 +318,6 @@ namespace Pathfinder_Prototype_2
 
             return img;
         }
-
-
 
 
     }

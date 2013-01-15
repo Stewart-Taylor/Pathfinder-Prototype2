@@ -135,12 +135,6 @@ namespace Pathfinder_Prototype_2
 
             }
 
-          //  pathfinderController.generatePath(startX, startY, targetX, targetY);
-          //  img_main.Source = pathfinderController.getPathImage();
-
-                   
-            
-      
 
             if (cmb_pathAlgorithm.SelectedIndex == 0)
             {
@@ -154,7 +148,6 @@ namespace Pathfinder_Prototype_2
             {
                 pathfinderController.startSimulationKnownMap(startX, startY, targetX, targetY );
             }
-
 
 
             lbl_stepsTaken.Text = pathfinderController.getSteps().ToString();
@@ -173,8 +166,6 @@ namespace Pathfinder_Prototype_2
         {
             pathfinderController.loadSlopeModel(getSlopeType());
         }
-
-
 
 
     }

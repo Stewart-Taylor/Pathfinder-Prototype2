@@ -7,9 +7,9 @@ namespace Pathfinder_Prototype_2
 {
     class Dstar : SearchAlgorithm
     {
-        List<Node> closed = new List<Node>();
-        List<Node> open = new List<Node>();
-        List<Node> hazard = new List<Node>();
+       private List<Node> closed = new List<Node>();
+       private List<Node> open = new List<Node>();
+       private List<Node> hazard = new List<Node>();
 
         public class Node
         {
@@ -25,8 +25,8 @@ namespace Pathfinder_Prototype_2
         }
 
 
-        Node current;
-        Node target;
+        private Node current;
+        private Node target;
 
         public Dstar(float[,] gridT, int startXT, int startYT, int targetXT, int targetYT) : base(gridT, startXT, startYT, targetXT, targetYT)
         {
@@ -36,17 +36,11 @@ namespace Pathfinder_Prototype_2
             targetX = targetXT;
             targetY = targetYT;
 
-
             current = new Node();
             target = new Node();
             target.x = targetX;
             target.y = targetY;
-
-
         }
-
-
-   
 
 
         public void updateVertex(int x , int y)
@@ -59,20 +53,16 @@ namespace Pathfinder_Prototype_2
 
         }
 
-
         public void replan(float[,] gridT)
         {
-
             grid = gridT;
 
             computeShortestPath();
-
         }
 
 
         public void computeShortestPath()
         {
-
             open.Clear();
             closed.Clear();
 
@@ -80,9 +70,6 @@ namespace Pathfinder_Prototype_2
             {
 
                 bool found = false; // used to determine if path is found
-
-  
-
 
                 //puts the start item in list
                 open.Add(current);
@@ -117,9 +104,7 @@ namespace Pathfinder_Prototype_2
                     open.Remove(current);
                     closed.Add(current);
 
-
                 } while (open.Count > 0); // Keeps going until the open list is empty
-
 
 
                 // if a path was found the path is worked out then returned
@@ -177,8 +162,6 @@ namespace Pathfinder_Prototype_2
         {
             current.x = startX;
             current.y = startY;
-
-
         }
 
 
@@ -214,21 +197,16 @@ namespace Pathfinder_Prototype_2
                 createNewNode((x - 1), (y - 1), 14, open, parent);
             }
 
-
-
             if (checkTile((x - 1), (y + 1), open, closed) == true)   // BOTTOM LEFT
             {
                 createNewNode((x - 1), (y + 1), 14, open, parent);
             }
-
 
             if (checkTile((x + 1), (y - 1), open, closed) == true) //TOP RIGHT
             {
 
                 createNewNode((x + 1), (y - 1), 14, open, parent);
             }
-
-
 
             if (checkTile((x + 1), (y + 1), open, closed) == true)  //BOTTOM RIGHT
             {
@@ -318,12 +296,7 @@ namespace Pathfinder_Prototype_2
         {
 
             return (Math.Abs(currentX- target.x) + Math.Abs(currentY - target.y));
-
-
-
         }
-
-
 
 
     }

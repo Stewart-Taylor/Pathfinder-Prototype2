@@ -8,8 +8,7 @@ namespace Pathfinder_Prototype_2
     class SlopeHorn : SlopeAlgrotithm
     {
 
-        public SlopeHorn(float[,] model)
-            : base(model)
+        public SlopeHorn(float[,] model): base(model)
         {
             heightMap = model;
             width = heightMap.GetLength(0);
@@ -17,7 +16,6 @@ namespace Pathfinder_Prototype_2
 
             generateSlopeModel();
         }
-
 
         protected override float calculateSlopeValue(int x, int y)
         {
@@ -41,7 +39,6 @@ namespace Pathfinder_Prototype_2
             float deltaY = ((g + (2 * h) + i) - (a + (2 * b) + c)) / (8 * y_cell_size);
 
             float value = deltaY / deltaX;
-
 
             return value;
         }

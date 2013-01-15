@@ -11,7 +11,6 @@ namespace Pathfinder_Prototype_2
         public int y;
         public PathNode parent;
         public PathNode child;
-
-
     }
+
 }

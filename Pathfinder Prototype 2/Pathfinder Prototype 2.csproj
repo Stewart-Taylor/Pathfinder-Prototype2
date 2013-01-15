@@ -58,17 +58,14 @@
     </ApplicationDefinition>
     <Compile Include="AStar.cs" />
     <Compile Include="Dstar.cs" />
-    <Compile Include="Pair.cs" />
     <Compile Include="Pathfinder.cs" />
     <Compile Include="PathNode.cs" />
-    <Compile Include="PriorityQueue.cs" />
     <Compile Include="SearchAlgorithm.cs" />
     <Compile Include="SlopeAlgrotithm.cs" />
     <Compile Include="SlopeAverage.cs" />
     <Compile Include="SlopeHorn.cs" />
     <Compile Include="SlopeMax.cs" />
     <Compile Include="SlopeModel.cs" />
-    <Compile Include="State.cs" />
     <Compile Include="Vehicle.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
